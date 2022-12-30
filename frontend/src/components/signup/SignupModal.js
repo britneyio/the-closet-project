@@ -1,11 +1,16 @@
 import React, {Component} from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+
 import {
     Button,
     Modal,
     Form,
     FormControl
 } from "react-bootstrap";
+
+import { signupUser } from './SignupActions';
 
 class SignupModal extends Component {
     constructor(props) {
@@ -27,7 +32,7 @@ class SignupModal extends Component {
             password: this.state.password,
             email: this.state.email
         };
-        console.log("Sign up " + userData.username + " " + userData.password + " " + userData.email)
+        this.props.signupUser(userData);
     }
     render() {
         return (
@@ -49,8 +54,9 @@ class SignupModal extends Component {
                             placeholder="Enter email"
                             value={this.email}
                             onChange={this.onChange}
+                            isInvalid={this.props.createUser.emailError}
                             />
-                            <FormControl.Feedback type="invalid"></FormControl.Feedback>
+                            <FormControl.Feedback type="invalid">{this.props.createUser.emailError}</FormControl.Feedback>
                             </Form.Group>
                         <Form.Group controlId="usernameId">
                             <Form.Label>Username </Form.Label>
@@ -60,8 +66,11 @@ class SignupModal extends Component {
                             placeholder="Enter username"
                             value={this.state.username}
                             onChange={this.onChange}
+                            isInvalid={this.props.createUser.usernameError}
                             />
+
                             <FormControl.Feedback type="invalid">
+                            {this.props.createUser.usernameError}
                                 </FormControl.Feedback>
                         </Form.Group>
 
@@ -73,13 +82,16 @@ class SignupModal extends Component {
                             placeholder="Enter password"
                             value={this.password}
                             onChange={this.onChange}
+                            isInvalid={this.props.createUser.passwordError}
                             />
-                            <FormControl.Feedback type="invalid"></FormControl.Feedback>
+                            <FormControl.Feedback type="invalid">
+                           {this.props.createUser.passwordError}
+                            </FormControl.Feedback>
                             </Form.Group>
                     </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                    <Button color="primtary"
+                    <Button color="primary"
                     onClick={this.onSignupClick}>Sign up</Button>
                     <p className="mt-2">Already have account? <Link to="/signin">Signin</Link></p>
                     </Modal.Footer>
@@ -88,4 +100,14 @@ class SignupModal extends Component {
     }
 }
 
-export default SignupModal;
+SignupModal.propTypes = {
+    signupUser: PropTypes.func.isRequired,
+    createUser: PropTypes.object.isRequired
+}
+
+const mapStateToProps = state => ({
+    createUser: state.createUser
+});
+
+
+export default connect(mapStateToProps, {signupUser})(SignupModal);

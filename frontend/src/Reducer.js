@@ -1,9 +1,13 @@
-import { combineReducers } from "redux";
 import { createRouterReducer } from '@lagunovsky/redux-react-router'
+import { signinReducer } from './components/signin/SigninReducer';
+import { signupReducer } from './components/signup/SignupReducer';
 
-const createRootReducer = history =>
-  combineReducers({
-    router: createRouterReducer(history)
-  });
 
-export default createRootReducer;
+const rootReducer =  (history) => ({
+    router: createRouterReducer(history),
+    createUser: signupReducer,
+    auth: signinReducer
+
+  })
+
+export default rootReducer;

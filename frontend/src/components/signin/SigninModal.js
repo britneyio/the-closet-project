@@ -4,15 +4,17 @@ import {
     Button,
     Modal,
     Form,
-    FormControl
 } from "react-bootstrap";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { signin } from "./SigninActions";
 
 class SigninModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            email: "",
             password: "",
-            email: ""
         };
     }
     // sets the state to the target name and value
@@ -22,10 +24,10 @@ class SigninModal extends Component {
 
     onSigninClick = () => {
         const userData = {
+            email: this.state.email,
             password: this.state.password,
-            email: this.state.email
         };
-        console.log("Sign up "  + userData.password + " " + userData.email)
+        this.props.signin(userData, "/closet");
     }
     render() {
         return (
@@ -34,7 +36,7 @@ class SigninModal extends Component {
             onHide={this.props.closeModalIn}>
                 <Modal.Header closeButton>
                     <Modal.Title>
-                    <h1>Signup</h1>
+                    <h1>Signin</h1>
                     </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -45,10 +47,9 @@ class SigninModal extends Component {
                             type="email"
                             name="email"
                             placeholder="Enter email"
-                            value={this.email}
+                            value={this.state.email}
                             onChange={this.onChange}
                             />
-                            <FormControl.Feedback type="invalid"></FormControl.Feedback>
                             </Form.Group>
 
                         <Form.Group controlId="passwordId">
@@ -57,16 +58,15 @@ class SigninModal extends Component {
                             type="password"
                             name="password"
                             placeholder="Enter password"
-                            value={this.password}
+                            value={this.state.password}
                             onChange={this.onChange}
                             />
-                            <FormControl.Feedback type="invalid"></FormControl.Feedback>
                             </Form.Group>
                     </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                    <Button color="primtary"
-                    onClick={this.onSignupClick}>Sign up</Button>
+                    <Button color="primary"
+                    onClick={this.onSigninClick}>Sign in</Button>
                     <p className="mt-2">Don't have an account? <Link to="/signup">Signin</Link></p>
                     </Modal.Footer>
            </Modal>
@@ -74,4 +74,14 @@ class SigninModal extends Component {
     }
 }
 
-export default SigninModal;
+SigninModal.propTypes = {
+    signin: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+
+
+export default connect(mapStateToProps, {signin}) (SigninModal);

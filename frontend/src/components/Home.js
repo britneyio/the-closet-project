@@ -31,7 +31,7 @@ class Home extends Component {
             <Button onClick={this.openModalUp}>Sign up</Button>
             {this.state.isOpenUp ? 
             <SignupModal
-                closeModalIn={this.closeModalUp}
+                closeModalUp={this.closeModalUp}
                 isOpenUp={this.state.isOpenUp}
                 /> : null }
                 </div>
