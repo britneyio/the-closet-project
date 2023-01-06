@@ -8,7 +8,7 @@ import {
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { signin } from "./SigninActions";
-
+import withRouter from "../../withRouter";
 class SigninModal extends Component {
     constructor(props) {
         super(props);
@@ -84,4 +84,4 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps, {signin}) (SigninModal);
+export default connect(mapStateToProps, {signin}) (withRouter(SigninModal));

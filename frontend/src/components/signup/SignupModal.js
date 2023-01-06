@@ -9,7 +9,7 @@ import {
     Form,
     FormControl
 } from "react-bootstrap";
-
+import withRouter from "../../withRouter";
 import { signupUser } from './SignupActions';
 
 class SignupModal extends Component {
@@ -110,4 +110,4 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps, {signupUser})(SignupModal);
+export default connect(mapStateToProps, {signupUser})(withRouter(SignupModal));
