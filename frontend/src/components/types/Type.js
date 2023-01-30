@@ -1,20 +1,25 @@
-// import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import React from 'react';
+import PropTypes from 'prop-types';
+import withRouter from '../../withRouter';
+import { connect } from "react-redux";
+import { Nav } from 'react-bootstrap';
 
-// class Type extends Component {
-//     render() {
-//         const { type } = this.props;
-//         return (
-//             <div>
-//                 <p>Name: {type.name}</p>
+function Type(props)  {
+        const { type } = props;
+        return (
+    <Nav.Link> {type.name} </Nav.Link>
 
-//             </div>
-//         );
-//     }
-// }
+        );
+    }
 
-// Type.propTypes = {
-//     type: PropTypes.object.isRequired
-// };
 
-// export default Type;
+Type.propTypes = {
+    type: PropTypes.object.isRequired
+};
+
+
+
+const mapStateToProps = state => ({});
+
+
+export default connect(mapStateToProps, {}) (withRouter(Type));

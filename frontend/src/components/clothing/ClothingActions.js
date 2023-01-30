@@ -17,6 +17,12 @@ export const getClothing = () => dispatch => {
 };
 
 // adds an item to the list of clothing
+const config = {
+    headers: {
+        'Content-Type': 'multipart/form-data',
+    },
+};
+
 export const addItem = item => dispatch => {
     axios.post('/api/v1/clothing/', item)
     .then(response => {
@@ -54,3 +60,4 @@ export const updateItem = (id, item) => dispatch => {
         toastOnError(error);
     });
 };
+

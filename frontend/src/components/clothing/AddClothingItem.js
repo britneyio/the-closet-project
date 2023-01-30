@@ -1,45 +1,43 @@
-import React, { Component , useState} from 'react';
+import React, { Component , useState, useCallback} from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Button, Form, FormSelect, Modal } from 'react-bootstrap';
 import { addItem } from './ClothingActions';
-import DatePicker from 'react-date-picker';
-class AddClothingItem extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            name: "",
-            worn: "",
-            location: "",
-            ctype: "",
-            cover: ""
-        };
+import TypesDropdown from '../types/TypesDropdown';
 
+
+AddClothingItem.defaultProps = {
+
+}
+function AddClothingItem(props) {
+    const [cname, setName] = useState('');
+    const [date, setWorn] = useState('');
+    const [type, setCtype] = useState('');
+    const [loc, setLocation] = useState('');
+    const [cov, setCover] = useState(null); 
+
+
+    
+    const handleCover = (e) => {
+        setCover(e.target.files[0]);
     }
-
-    onChange = e => {
-        this.setState({ [e.target.name]: e.target.value});
-    };
-
-    onAddClick = () => {
-        const item = {
-                name: this.state.name,
-                worn: this.state.worn,
-                location: this.state.location,
-                ctype: this.state.ctype,
-                cover: this.state.cover
-            };
-            this.props.addItem(item);
+   const onAddClick = ()  => {
+            const formData = new FormData();
+            formData.append('cover', cov);
+            formData.append('name', cname);
+            formData.append('location',loc);
+            formData.append('worn', date);
+            formData.append('ctype',type);
+            props.addItem(formData);
+        
         };
 
 
-    render() {
         return (
-            <div>
                             <Modal
-            show={this.props.isOpenAdd}
-            onHide={this.props.closeModalAdd}>
+            show={props.isOpenAdd}
+            onHide={props.closeModalAdd}>
                 <Modal.Header closeButton>
                     <Modal.Title>
                     <h2>Add new item</h2>
@@ -47,24 +45,25 @@ class AddClothingItem extends Component {
                     </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                <Form>
+                <Form >
                     <Form.Group controlId="nameId">
                         <Form.Label>Name:</Form.Label>
                         <Form.Control
                             type="text"
-                            name="clothing_name"
+                            name="clothingname"
                             placeholder="favorite blue jeans"
-                            value={this.state.name}
-                            onChange={this.onChange}
+                            value={cname}
+                            onChange={e => setName(e.target.value)}
                             />
                     </Form.Group>
                     <Form.Group controlId="wornId">
                         <Form.Label>Last worn:</Form.Label>
                         <Form.Control
                             type="date"
-                            name="last_worn"
-                            value={this.state.worn}
-                            onChange={this.onChange}
+                            name="lastworn"
+                            value={date}
+
+                            onChange={e => setWorn(e.target.value)}
                             />
                     </Form.Group>
                     <Form.Group controlId="locationId">
@@ -73,26 +72,38 @@ class AddClothingItem extends Component {
                             type="text"
                             name="location"
                             placeholder="top left drawer"
-                            value={this.state.location}
-                            onChange={this.onChange}
+                            value={loc}
+                            onChange={e => setLocation(e.target.value)}
                             />
+                    </Form.Group>
+                    <Form.Group controlId="ctypeId">
+                        <Form.Label>Clothing type:</Form.Label>
+                        <TypesDropdown value={type} 
+                        onChange={e => setCtype(e.target.value)}
+                        types={props.types}
+                        />
                     </Form.Group>
                     <Form.Group controlId="coverId">
                         <Form.Label>Last worn:</Form.Label>
                         <Form.Control
                             type="file"
                             name="cover"
-                            value={this.state.cover}
-                            onChange={this.onChange}
+                            onChange={handleCover}
+                            accept="image/*"
                             />
                     </Form.Group>
+                    <Button  color="primary"
+                    onClick={() => onAddClick()}>Create</Button>
                 </Form>
                 </Modal.Body>
+
+                <Modal.Footer>
+                   
+                    </Modal.Footer>
                 </Modal>
-            </div>
         );
     }
-    }
+    
 
 AddClothingItem.propTypes = {
     addItem: PropTypes.func.isRequired
