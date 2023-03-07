@@ -3,12 +3,20 @@ import {Button, Nav, Navbar, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import SignupModal from "./signup/SignupModal";
 import SigninModal from "./signin/SigninModal";
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import './home.css';
+import colors from '../common/colors';
 
+const StyledNavBar = styled(Navbar)`
+  background-color:${colors.highlight2};
+`;
 
-
-function Home(props) {
+const HomeContainer = createGlobalStyle`
+  body {
+  background-color:${colors.background1};
+  }
+`;
+function Home() {
   const [signInState, setSignInModal] = useState(false);
   const [signUpState, setSignUpModal] = useState(false);
 
@@ -18,8 +26,10 @@ function Home(props) {
     const closeModalUp = () => setSignUpModal(false);
 
     return (
+   
       <div>
-      <Navbar variant="color" expand="lg">
+           <HomeContainer />
+      <StyledNavBar variant="color" expand="lg">
       <Container>
         <Navbar.Brand href="/">The Closet Project</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -37,7 +47,7 @@ function Home(props) {
         </Navbar.Collapse>
         </Container>
 
-    </Navbar>
+    </StyledNavBar>
     <Container>
       <h1>Your closet online</h1>
       </Container>

@@ -7,9 +7,6 @@ import { addType } from './TypeActions';
 
 function AddClothingType(props) {
     const [name, setName] = useState('');
-
-
-
     const onAddClick = () => {
         const formData = new FormData();
         formData.append('name', name);

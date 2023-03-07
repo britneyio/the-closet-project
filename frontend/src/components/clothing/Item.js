@@ -1,27 +1,33 @@
 import React, { Component, useState } from 'react';
 import PropTypes from 'prop-types';
-import './item.css';
 import { deleteItem, updateItem} from './ClothingActions';
 import { Card, Button, ListGroup } from 'react-bootstrap';
 import withRouter from '../../withRouter';
 import UpdateModal from './UpdateModal';
 import { connect } from "react-redux";
+import styled from 'styled-components';
+
+const StyledCard = styled(Card)`
+ & .card-img-top {
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+}
+`;
 
 function Item(props) {
     const [state, setState] = useState(false);
 
-    const onDeleteClick = () => {
-        const { item } = props;
-        props.deleteItem(item.id);
-    };
+
 
     const closeModalUpdate = () => setState(false);
    
     const { item } = props;
 
+
         return (
 
-            <Card style={{ width: '10rem' }} >
+            <StyledCard>
                 <Card.Img id={"itemDesign-img"} variant="top" src={item.cover} alt={item.name} />
                 <Card.Body>
                     <Card.Title>
@@ -43,9 +49,9 @@ function Item(props) {
                         types={props.types}
                         /> : null
                 }
-                <Button size="sm" onClick={() => onDeleteClick()}>Delete</Button>
+                
                 </Card.Body>
-            </Card>
+            </StyledCard>
         );
     }
 
@@ -57,4 +63,4 @@ Item.propTypes = {
 const mapStateToProps = state => ({});
 
 
-export default connect(mapStateToProps, {deleteItem, updateItem}) (withRouter(Item));
+export default connect(mapStateToProps, { updateItem}) (withRouter(Item));

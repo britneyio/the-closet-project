@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import Closet from "./components/closet/Closet";
+import Outfits from "./components/outfits/Outfits";
 import { ToastContainer } from "react-toastify";
 import Root from "./Root";
 import axios from "axios";
@@ -20,6 +21,11 @@ class App extends Component {
             <Route  path="/closet" element={
               <AuthenticationComponent>
                 <Closet />
+                </AuthenticationComponent>
+            } />
+            <Route  path="/outfits" element={
+              <AuthenticationComponent>
+                <Outfits />
                 </AuthenticationComponent>
             } />
             <Route path="*" element={<NotFound/>} />

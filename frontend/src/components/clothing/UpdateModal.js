@@ -1,35 +1,80 @@
-import React, { Component , useState} from 'react';
+import React, { useState} from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Form, Modal, Dropdown } from 'react-bootstrap';
-import { updateItem } from './ClothingActions';
-import { getTypes } from '../types/TypeActions';
-import { ThemeConsumer } from 'react-bootstrap/esm/ThemeProvider';
+import { updateItem, deleteItem } from './ClothingActions';
 import TypesDropdown from '../types/TypesDropdown';
+import withRouter from '../../withRouter';
+import { DeleteOutlined } from '@ant-design/icons';
+import styled from 'styled-components';
+import colors from '../../common/colors';
+
+const StyledModal = styled(Modal)`
+& .modal-content {
+    background-color: ${colors.background1};
+}
+justify-content:space-between;
+button {
+    background-color: ${colors.highlight1};
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: ${colors.highlight3};
+}
+`;
+
+const ButtonGroup = styled.div`
+    display:flex;
+    justify-content:space-between;
+`;
+
+
 
 function UpdateModal(props) {
-    const [cname, setName] = useState('');
-    const [date, setWorn] = useState('');
-    const [type, setCtype] = useState('');
-    const [loc, setLocation] = useState('');
-    const [cov, setCover] = useState(null); 
+    const item = props.item;
+    const [cname, setName] = useState(item.name);
+    const [date, setWorn] = useState(item.worn);
+    const [type, setCtype] = useState(item.ctype);
+    const [loc, setLocation] = useState(item.location);
+    const [cov, setCover] = useState(item.cover); 
 
 
     const handleCover = (e) => {
         setCover(e.target.files[0]);
     }
+
+     function createFile(input){
+        let response =  fetch(input);
+        let data =  response.blob();
+        let metadata = {
+          type: 'image/jpeg'
+        };
+        return new File([data], input, metadata);
+    }
+
+    const onDeleteClick = () => {
+        const { item } = props;
+        props.deleteItem(item.id);
+    };
    const onUpdateClick = ()  => {
             const formData = new FormData();
+            if (cov === item.cover) {
+                setCover(createFile(item.cover));
+            }
+            console.log(cov);
             formData.append('cover', cov);
             formData.append('name', cname);
             formData.append('location',loc);
             formData.append('worn', date);
             formData.append('ctype',type);
-            props.addItem(formData);
+            props.updateItem(item.id,formData);
         
         };
+
         return (
-            <Modal
+            <StyledModal
 show={props.isOpenUpdate}
 onHide={props.closeModalUpdate}>
 <Modal.Header closeButton>
@@ -45,7 +90,7 @@ onHide={props.closeModalUpdate}>
         <Form.Control
             type="text"
             name="clothingname"
-            placeholder={props.item.name}
+            placeholder={item.name}
             value={cname}
             onChange={e => setName(e.target.value)}
             />
@@ -55,7 +100,7 @@ onHide={props.closeModalUpdate}>
         <Form.Control
             type="date"
             name="lastworn"
-            value={props.item.worn}
+            value={item.worn}
 
             onChange={e => setWorn(e.target.value)}
             />
@@ -65,7 +110,7 @@ onHide={props.closeModalUpdate}>
         <Form.Control
             type="text"
             name="location"
-            placeholder={props.item.location}
+            placeholder={item.location}
             value={loc}
             onChange={e => setLocation(e.target.value)}
             />
@@ -86,23 +131,28 @@ onHide={props.closeModalUpdate}>
             accept="image/*"
             />
     </Form.Group>
-    <Button  color="primary"
-    onClick={() => onUpdateClick()}>Create</Button>
+    <hr/>
+    <ButtonGroup>
+    <Button  size="sm"
+    onClick={() => onUpdateClick()}>Update</Button>
+   <DeleteOutlined onClick={() => onDeleteClick()} />
+   </ButtonGroup>
 </Form>
 </Modal.Body>
 
 <Modal.Footer>
    
     </Modal.Footer>
-</Modal>
+</StyledModal>
 );
     }
     
 
 UpdateModal.propTypes = {
-    updateItem: PropTypes.func.isRequired
+    updateItem: PropTypes.func.isRequired,
+    deleteItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({});
 
-export default connect(mapStateToProps, {updateItem})(UpdateModal);
+export default connect(mapStateToProps, {updateItem, deleteItem})(withRouter(UpdateModal));

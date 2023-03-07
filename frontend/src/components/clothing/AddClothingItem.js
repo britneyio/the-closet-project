@@ -1,7 +1,7 @@
 import React, { Component , useState, useCallback} from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import withRouter from '../../withRouter';
 import { Button, Form, FormSelect, Modal } from 'react-bootstrap';
 import { addItem } from './ClothingActions';
 import TypesDropdown from '../types/TypesDropdown';
@@ -29,6 +29,7 @@ function AddClothingItem(props) {
             formData.append('location',loc);
             formData.append('worn', date);
             formData.append('ctype',type);
+            console.log(cov);
             props.addItem(formData);
         
         };
@@ -111,4 +112,4 @@ AddClothingItem.propTypes = {
 
 const mapStateToProps = state => ({});
 
-export default connect(mapStateToProps, {addItem})(AddClothingItem);
+export default connect(mapStateToProps, {addItem})(withRouter(AddClothingItem));
