@@ -17,7 +17,7 @@ import withRouter from "../withRouter";
             // if not authenticated then it is redirected
             if (!this.props.isAuthenticated) {
                 const redirectAfterLogin = window.location.pathname;
-                this.props.dispatch(push(`/login?next=${redirectAfterLogin}`));
+                this.props.dispatch(push(`/`));
             }
         }
         // if authenticated then renders the component

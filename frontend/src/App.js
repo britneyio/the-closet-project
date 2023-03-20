@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 import Root from "./Root";
 import axios from "axios";
 import AuthenticationComponent from './utils/RequireAuth';
-
+import OutfitCreator from './components/outfits/OutfitCreator';
 axios.defaults.baseURL = "http://127.0.0.1:8000";
 class App extends Component {
   render() {
@@ -26,6 +26,11 @@ class App extends Component {
             <Route  path="/outfits" element={
               <AuthenticationComponent>
                 <Outfits />
+                </AuthenticationComponent>
+            } />
+              <Route  path="/outfit-creator" element={
+              <AuthenticationComponent>
+                <OutfitCreator />
                 </AuthenticationComponent>
             } />
             <Route path="*" element={<NotFound/>} />

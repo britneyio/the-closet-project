@@ -4,7 +4,7 @@ import { GET_OUTFITS, ADD_OUTFIT, DELETE_OUTFIT, UPDATE_OUTFIT } from './OutfitT
 
 // returns list of clothing
 export const getOutfits = () => dispatch => {
-    axios.get('/api/v1/outfits/')
+    axios.get('/api/v1/outfit/')
     .then(response => {
         dispatch({
             type: GET_OUTFITS,
@@ -24,7 +24,7 @@ const config = {
 };
 
 export const addOutfit = item => dispatch => {
-    axios.post('/api/v1/outfits/', item)
+    axios.post('/api/v1/outfit/', item)
     .then(response => {
         dispatch({
             type: ADD_OUTFIT,
@@ -37,7 +37,7 @@ export const addOutfit = item => dispatch => {
 
 // deletes an item
 export const deleteOutfit = id => dispatch => {
-    axios.delete(`/api/v1/outfits/${id}/`)
+    axios.delete(`/api/v1/outfit/${id}/`)
     .then(response => {
         dispatch({
             type: DELETE_OUTFIT,
@@ -50,7 +50,7 @@ export const deleteOutfit = id => dispatch => {
 
 // updates an item
 export const updateOutfit = (id, item) => dispatch => {
-    axios.put(`/api/v1/outfits/${id}/`, item)
+    axios.put(`/api/v1/outfit/${id}/`, item)
     .then(response => {
         dispatch({
             type: UPDATE_OUTFIT,

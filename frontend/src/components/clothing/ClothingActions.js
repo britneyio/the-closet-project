@@ -3,7 +3,7 @@ import { toastOnError } from '../../utils/Utils';
 import { GET_CLOTHING, ADD_ITEM, DELETE_ITEM, UPDATE_ITEM } from './ClothingItemTypes';
 
 // returns list of clothing
-export const getClothing = () => dispatch => {
+export const getClothing = () => async dispatch => {
     axios.get('/api/v1/clothing/')
     .then(response => {
         dispatch({

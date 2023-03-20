@@ -1,0 +1,20 @@
+@font-face {
+    font-family: 'MyFont';
+    src: local('MyFont'), url(./fonts/AbrilFatface-Regular.ttf) format('truetype');
+    /* other formats include: 'woff2', 'truetype, 'opentype',
+                              'embedded-opentype', and 'svg' */
+  }
+
+  @font-face {
+    font-family: 'NavFont';
+    src: local('NavFont'), url(./fonts/calendas_plus-webfont.ttf) format('truetype');
+    /* other formats include: 'woff2', 'truetype, 'opentype',
+                              'embedded-opentype', and 'svg' */
+  }
+
+  @font-face {
+    font-family: 'NavFontBold';
+    src: local('NavFontBold'), url(./fonts/TimeburnerBold-peGR.ttf) format('truetype');
+    /* other formats include: 'woff2', 'truetype, 'opentype',
+                              'embedded-opentype', and 'svg' */
+  }

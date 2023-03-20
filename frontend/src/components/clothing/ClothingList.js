@@ -1,5 +1,4 @@
 import React from 'react';
-import {useSelector } from 'react-redux';
 import Item from './Item';
 import { Container } from 'react-bootstrap';
 import styled from 'styled-components';
@@ -8,7 +7,7 @@ import colors from '../../common/colors';
 const StyledList = styled(Container)`
     display: flex;
     flex-direction:row;
-    gap:15px;
+    gap:50px;
     position: relative;
     overflow:hidden;
     width:100%;
@@ -48,3 +47,6 @@ export default function ClothingList(props) {
               </StyledList>
         );
     }
+
+
+
