@@ -1,10 +1,10 @@
 import React, { Component, useState } from 'react';
 import PropTypes from 'prop-types';
-import { deleteItem, updateItem} from './ClothingActions';
+import { deleteItem, updateItem} from '../../middleware/ClothingActions';
 import { Card, Button, ListGroup } from 'react-bootstrap';
 import withRouter from '../../withRouter';
 import UpdateModal from './UpdateModal';
-import { connect } from "react-redux";
+import {connect, useDispatch} from "react-redux";
 import styled from 'styled-components';
 
 const StyledCard = styled(Card)`
@@ -19,15 +19,11 @@ const StyledCard = styled(Card)`
 }
 `;
 
-function Item(props) {
+export default function Item(props) {
     const [state, setState] = useState(false);
-
-
-
     const closeModalUpdate = () => setState(false);
    
     const { item } = props;
-
         return (
 
             <StyledCard>
@@ -44,27 +40,18 @@ function Item(props) {
       </ListGroup>
                        
                       
-                <Button size="sm" onClick={() => setState(true)}>Edit</Button>
-                {state ? 
+                <Button size="sm" onClick={() => setState(true)} style={{color:'black'}}>Edit</Button>
+
                     <UpdateModal
                         closeModalUpdate={closeModalUpdate}
                         isOpenUpdate={state}
                         item={item}
                         types={props.types}
-                        /> : null
-                }
+                        />
+
                 
                 </Card.Body>
             </StyledCard>
         );
     }
 
-
-Item.propTypes = {
-    item: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({});
-
-
-export default connect(mapStateToProps, { updateItem}) (withRouter(Item));

@@ -5,11 +5,20 @@ import ClothingList from "../clothing/ClothingList";
 import AddClothingItem from "../clothing/AddClothingItem";
 import withRouter from "../../withRouter";
 import TypeList from "../types/TypeList";
-import { getTypes } from "../types/TypeActions";
+import { getTypes } from "../../middleware/TypeActions";
 import {SettingFilled} from '@ant-design/icons';
-import {StyledModal, StyledPagination, StyledNavbar, StyledSearchBar, FlexWrapper, HomeStyles, PageContainer} from '../../common/inputs';
+import {
+    StyledModal,
+    StyledPagination,
+    StyledNavbar,
+    StyledSearchBar,
+    FlexWrapper,
+    HomeStyles,
+    PageContainer,
+    StyledNavbarComponent
+} from '../../common/inputs';
 import { useNavigate } from "react-router";
-import { getOutfits } from "./OutfitActions";
+import { getOutfits } from "../../middleware/OutfitActions";
 import OutfitList from "./OutfitList";
 
 const selectTypes = state => state.types;
@@ -26,7 +35,6 @@ function Outfits(props) {
   const {outfits} = useSelector(selectOutfits);
   const [fit, setOutfits] = useState([]);
 
-    console.log(outfits);
   const onSignout = () => {
     props.signout();
   };
@@ -71,55 +79,36 @@ const handleAddOutfit = () => {
     return (
       <FlexWrapper>
          <HomeStyles />
-         <PageContainer> 
-         <StyledNavbar expand="lg" sticky="top">
-        <div className="nav-header">{user.username}'s Outfits</div>
-        <div className="nav-link" onClick={handleClosettLink}>Closet</div>
-        <div className="nav-link" onClick={handleAddOutfit}>Outfit Creator Tool</div>
-        {/* <div className="nav-link">Home</div> */}
-        <div className="nav-link search">         <StyledSearchBar><Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Find my favorite item"
-              className="me-2"
-              aria-label="Search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <Button variant="outline-success"  onClick={handleSearch}>Search</Button>
-          </Form></StyledSearchBar> </div>
-        <div className="nav-link settings right"><SettingFilled /></div>
+         <PageContainer>
+             <StyledNavbarComponent user={user.username} currentPage={"Outfits"} search={search} setSearch={setSearch} handleSearch={handleSearch}/>
 
 
-    </StyledNavbar>
 
-     
-
-        {state ? 
+             {state ?
             <AddClothingItem
                 closeModalAdd={closeModalAdd}
                 isOpenAdd={state}
                 types={types}
                 /> : null }
-        <TypeList isClicked={typeIsClicked} />
+        <TypeList types={types.types} isClicked={typeIsClicked} />
           <OutfitList outfits={outfits} />
           </PageContainer>
-<StyledPagination>
-          <Pagination size="sm">
-      <Pagination.First />
-      <Pagination.Prev />
-      <Pagination.Item active>{1}</Pagination.Item>
-      <Pagination.Ellipsis />
+{/*<StyledPagination>*/}
+{/*          <Pagination size="sm">*/}
+{/*      <Pagination.First />*/}
+{/*      <Pagination.Prev />*/}
+{/*      <Pagination.Item active>{1}</Pagination.Item>*/}
+{/*      <Pagination.Ellipsis />*/}
 
-      <Pagination.Item>{3}</Pagination.Item>
-  
+{/*      <Pagination.Item>{3}</Pagination.Item>*/}
+{/*  */}
 
-      <Pagination.Ellipsis />
-      <Pagination.Item>{5}</Pagination.Item>
-      <Pagination.Next />
-      <Pagination.Last />
-    </Pagination> 
-    </StyledPagination>
+{/*      <Pagination.Ellipsis />*/}
+{/*      <Pagination.Item>{5}</Pagination.Item>*/}
+{/*      <Pagination.Next />*/}
+{/*      <Pagination.Last />*/}
+{/*    </Pagination> */}
+{/*    </StyledPagination>*/}
           
       </FlexWrapper>
     );

@@ -6,15 +6,14 @@ import SigninModal from "./signin/SigninModal";
 import styled, { createGlobalStyle } from 'styled-components';
 import './home.css';
 import colors from '../common/colors';
+import { FlexWrapper, HomeStyles, StyledNavbar, PageContainer } from "../common/inputs";
+import { SettingFilled } from "@ant-design/icons";
+import { useNavigate } from "react-router";
+import withRouter from "../withRouter";
 
-const StyledNavBar = styled(Navbar)`
-  background-color:${colors.highlight2};
-`;
-
-const HomeContainer = createGlobalStyle`
-  body {
-  background-color:${colors.background1};
-  }
+const StyledContainer = styled(Container)`
+  height:100vh;
+  overflow-y:hidden;
 `;
 function Home() {
   const [signInState, setSignInModal] = useState(false);
@@ -25,71 +24,48 @@ function Home() {
     const openModalUp = () => setSignUpModal(true);
     const closeModalUp = () => setSignUpModal(false);
 
+    const navigate = useNavigate();
+
+
+    const handleClosetLink = () => {
+      navigate("/closet");
+    };
+
+    const handleOutfitLink = () => {
+      navigate("/outfits");
+    };
+    const handleCreatorLink = () => {
+      navigate("/outfit-creator");
+    };
+
+
     return (
-   
+      <FlexWrapper>
+      <HomeStyles />
+      <PageContainer> 
       <div>
-           <HomeContainer />
-      <StyledNavBar variant="color" expand="lg">
-      <Container>
-        <Navbar.Brand href="/">The Closet Project</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-        
-          <Nav className="me-auto">
-            <Nav.Link href="/closet">Closet</Nav.Link>
-            <Nav.Link href="#">How it Works</Nav.Link>
-            </Nav>
-            <Nav>
-            <Nav.Link className="signLink" onClick={openModalIn}>Sign in</Nav.Link>
-            <Nav.Link className="signLink" onClick={openModalUp}><Button>Sign up</Button></Nav.Link>
+           <StyledNavbar expand="lg" sticky="top">
+        <div className="nav-header">The Closet Project</div>
+        <div className="nav-link" onClick={handleClosetLink}>Closet</div>
+        <div className="nav-link" onClick={handleOutfitLink}>Outfits</div>
+        <div className="nav-link" onClick={handleCreatorLink}>Outfit Creator Tool</div>
+        <div className="signLink">
+        <div className="nav-link" onClick={openModalIn}>Sign in</div>
+        <div className="nav-link nohover" onClick={openModalUp}><Button>Sign up</Button></div>
+        </div>
 
-          </Nav>
-        </Navbar.Collapse>
-        </Container>
 
-    </StyledNavBar>
-    <Container>
-      <h1>Your closet online</h1>
-      <Carousel>
-      <Carousel.Item>
+</StyledNavbar>
+    <StyledContainer >
+   
         <img
-          className="d-block w-100"
-          src="https://www.simplilearn.com/ice9/free_resources_article_thumb/what_is_image_Processing.jpg"
+          style={{height:"100%", width:"100%", overflow:"hidden"}}
+          src="https://miro.medium.com/v2/resize:fit:1400/1*GKfCRRWwXkrAVNJ4GFET8Q.png"
           alt="First slide"
         />
-        <Carousel.Caption>
-          <h3>First slide label</h3>
-          <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-        </Carousel.Caption>
-      </Carousel.Item>
-      <Carousel.Item>
-        <img
-          className="d-block w-100"
-          src="http://127.0.0.1:8000/media/images/cobalt-blue-t-shirt_IFyUHp8.jpg"
-          alt="Second slide"
-        />
-
-        <Carousel.Caption>
-          <h3>Second slide label</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </Carousel.Caption>
-      </Carousel.Item>
-      <Carousel.Item>
-        <img
-          className="d-block w-100"
-          src="c11d164de692594acf53c9a855093139.jpg"
-          alt="Third slide"
-        />
-
-        <Carousel.Caption>
-          <h3>Third slide label</h3>
-          <p>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-          </p>
-        </Carousel.Caption>
-      </Carousel.Item>
-    </Carousel>
-      </Container>
+  
+  
+      </StyledContainer>
     
         
             {signInState ? 
@@ -104,10 +80,16 @@ function Home() {
                 isOpenUp={signUpState}
                 /> : null }
                 </div>
+
+
+</PageContainer> 
+
+
+</FlexWrapper>
                 
     
     );
   }
 
 
-export default Home;
+export default withRouter(Home);

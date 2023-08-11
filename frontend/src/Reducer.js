@@ -1,9 +1,9 @@
 import { createRouterReducer } from '@lagunovsky/redux-react-router'
-import { clothingReducer } from './components/clothing/ClothingReducer';
-import { outfitReducer } from './components/outfits/OutfitReducer';
-import { signinReducer } from './components/signin/SigninReducer';
-import { signupReducer } from './components/signup/SignupReducer';
-import { typeReducer } from './components/types/TypeReducer';
+import { clothingReducer } from './store/ClothingReducer';
+import { outfitReducer } from './store/OutfitReducer';
+import { signinReducer } from './store/SigninReducer';
+import { signupReducer } from './store/SignupReducer';
+import { typeReducer } from './store/TypeReducer';
 
 
 const rootReducer =  (history) => ({

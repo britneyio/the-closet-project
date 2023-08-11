@@ -1,29 +1,15 @@
-import React, { useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Button, Form, Modal, Dropdown } from 'react-bootstrap';
-import { updateItem, deleteItem } from './ClothingActions';
+import {connect, useDispatch} from 'react-redux';
+import {Button, Form, Modal, Dropdown, Card} from 'react-bootstrap';
+import {updateItem, deleteItem, getClothing} from '../../middleware/ClothingActions';
 import TypesDropdown from '../types/TypesDropdown';
 import withRouter from '../../withRouter';
 import { DeleteOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import colors from '../../common/colors';
-
-const StyledModal = styled(Modal)`
-& .modal-content {
-    background-color: ${colors.background1};
-}
-justify-content:space-between;
-button {
-    background-color: ${colors.highlight1};
-    margin-left: 20px;
-    margin-top: 10px;
-}
-
-button:hover {
-    background-color: ${colors.highlight3};
-}
-`;
+import {StyledModal} from "../../common/inputs";
+import {getTypes} from "../../middleware/TypeActions";
 
 const ButtonGroup = styled.div`
     display:flex;
@@ -32,44 +18,42 @@ const ButtonGroup = styled.div`
 
 
 
-function UpdateModal(props) {
+export default function UpdateModal(props) {
     const item = props.item;
     const [cname, setName] = useState(item.name);
     const [date, setWorn] = useState(item.worn);
     const [type, setCtype] = useState(item.ctype);
     const [loc, setLocation] = useState(item.location);
-    const [cov, setCover] = useState(item.cover); 
+    const [cov, setCover] = useState(item.cover);
+    const dispatch = useDispatch();
 
-
-    const handleCover = (e) => {
+    const handleCover =  (e) => {
         setCover(e.target.files[0]);
     }
 
-     function createFile(input){
-        let response =  fetch(input);
-        let data =  response.blob();
-        let metadata = {
-          type: 'image/jpeg'
-        };
-        return new File([data], input, metadata);
-    }
+     async function createFile(input) {
+         let response = await fetch(input);
+         let data = await response.blob();
+         let metadata = {
+             type: 'image/jpg'
+         };
+         return new File([data], input, metadata);
+     }
 
     const onDeleteClick = () => {
+
         const { item } = props;
-        props.deleteItem(item.id);
+        dispatch(deleteItem(item.id));
     };
-   const onUpdateClick = ()  => {
+   const onUpdateClick = async ()  => {
             const formData = new FormData();
-            if (cov === item.cover) {
-                setCover(createFile(item.cover));
-            }
-            console.log(cov);
-            formData.append('cover', cov);
+            const cover = cov instanceof File ? cov : await createFile(item.cover);
+            formData.append('cover', cover);
             formData.append('name', cname);
             formData.append('location',loc);
             formData.append('worn', date);
             formData.append('ctype',type);
-            props.updateItem(item.id,formData);
+            dispatch(updateItem(item.id,formData));
         
         };
 
@@ -123,13 +107,15 @@ onHide={props.closeModalUpdate}>
                         />
     </Form.Group>
     <Form.Group controlId="coverId">
-        <Form.Label>Last worn:</Form.Label>
+        <Card.Img id={"itemDesign-img"} variant="top" src={item.cover} alt={item.name} />
+
         <Form.Control
             type="file"
             name="cover"
             onChange={handleCover}
             accept="image/*"
             />
+
     </Form.Group>
     <hr/>
     <ButtonGroup>
@@ -148,11 +134,3 @@ onHide={props.closeModalUpdate}>
     }
     
 
-UpdateModal.propTypes = {
-    updateItem: PropTypes.func.isRequired,
-    deleteItem: PropTypes.func.isRequired
-};
-
-const mapStateToProps = state => ({});
-
-export default connect(mapStateToProps, {updateItem, deleteItem})(withRouter(UpdateModal));

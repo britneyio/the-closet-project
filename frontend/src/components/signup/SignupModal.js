@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-
+import colors from "../../common/colors";
 import {
     Button,
     Modal,
@@ -10,7 +10,9 @@ import {
     FormControl
 } from "react-bootstrap";
 import withRouter from "../../withRouter";
-import { signupUser } from './SignupActions';
+import { signupUser } from '../../middleware/SignupActions';
+import styled from 'styled-components';
+import {StyledModal} from "../../common/inputs";
 
 class SignupModal extends Component {
     constructor(props) {
@@ -36,7 +38,7 @@ class SignupModal extends Component {
     }
     render() {
         return (
-            <Modal
+            <StyledModal
             show={this.props.isOpenUp}
             onHide={this.props.closeModalUp}>
                 <Modal.Header closeButton>
@@ -91,11 +93,11 @@ class SignupModal extends Component {
                     </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                    <Button color="primary"
+                    <Button
                     onClick={this.onSignupClick}>Sign up</Button>
                     <p className="mt-2">Already have account? <Link to="/signin">Signin</Link></p>
                     </Modal.Footer>
-           </Modal>
+           </StyledModal>
         );
     }
 }

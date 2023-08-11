@@ -4,7 +4,7 @@ import { createBrowserHistory } from "history";
 import { createRouterMiddleware, ReduxRouter } from '@lagunovsky/redux-react-router'
 import thunk from 'redux-thunk';
 import { Provider } from "react-redux";
-import { setCurrentUser, setToken } from "./components/signin/SigninActions"; // new imports
+import { setCurrentUser, setToken } from "./middleware/SigninActions"; // new imports
 import { isEmpty } from "./utils/Utils";
 
 const Root = ({ children,     preloadedState

@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { toastOnError } from '../../utils/Utils';
-import { GET_CLOTHING, ADD_ITEM, DELETE_ITEM, UPDATE_ITEM } from './ClothingItemTypes';
+import { toastOnError } from '../utils/Utils';
+import { GET_CLOTHING, ADD_ITEM, DELETE_ITEM, UPDATE_ITEM } from '../store/types';
 
 // returns list of clothing
 export const getClothing = () => async dispatch => {

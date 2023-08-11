@@ -42,7 +42,7 @@ export default function ClothingList(props) {
 
         return(
               
-            <StyledList >
+            <StyledList>
               {items}
               </StyledList>
         );

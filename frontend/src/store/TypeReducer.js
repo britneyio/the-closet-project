@@ -1,4 +1,4 @@
-import { GET_TYPES, ADD_TYPE, DELETE_TYPE, UPDATE_TYPE} from "./TypeTypes";
+import { GET_TYPES, ADD_TYPE, DELETE_TYPE, UPDATE_TYPE} from "./types";
 
 const initialState = {
     types: []

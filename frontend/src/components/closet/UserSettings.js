@@ -8,21 +8,21 @@
 //     const [username, setUsername] = useState(user.username);
 //     const [password, setPassword] = useState(user.password);
 //     const [email, setEmail] = useState(user.email);
-
+//
 //     const onDeleteClick = () => {
 //         props.deleteUser(user.id);
 //     };
-
+//
 //    const onUpdateClick = ()  => {
 //             const formData = new FormData();
 //             formData.append(username, 'username');
 //             formData.append(password, 'password');
 //             formData.append(email, 'email');
-
+//
 //             props.updateUser(user.id,formData);
-        
+//
 //         };
-
+//
 //         return (
 //             <Modal
 // show={props.isOpenUpdate}
@@ -30,7 +30,7 @@
 // <Modal.Header closeButton>
 //     <Modal.Title>
 //     <h2>Update item</h2>
-
+//
 //     </Modal.Title>
 //     </Modal.Header>
 //     <Modal.Body>
@@ -65,27 +65,27 @@
 //             onChange={e => setPassword(e.target.value)}
 //             />
 //     </Form.Group>
-
+//
 //     <Button  color="primary"
 //     onClick={() => onUpdateClick()}>Update</Button>
 //     <Button  color="dark"
 //     onClick={() => onDeleteClick()}>Delete</Button>
 // </Form>
 // </Modal.Body>
-
+//
 // <Modal.Footer>
-   
+//
 //     </Modal.Footer>
 // </Modal>
 // );
 //     }
-    
-
+//
+//
 // UserSettings.propTypes = {
 //     updateUser: PropTypes.func.isRequired,
 //     deleteUser: PropTypes.func.isRequired
 // };
-
+//
 // const mapStateToProps = state => ({});
-
+//
 // export default connect(mapStateToProps, {updateUser, deleteUser})(withRouter(UserSettings));

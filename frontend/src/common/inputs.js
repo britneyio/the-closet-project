@@ -1,24 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Modal, Navbar, Container } from 'react-bootstrap';
+import {Modal, Navbar, Container, Form, Button} from 'react-bootstrap';
 import colors from './colors';
 import { ModalHeader } from './fonts';
 import {createGlobalStyle} from 'styled-components';
-
+import {SettingFilled} from "@ant-design/icons";
+import {useNavigate} from "react-router";
 export const StyledModal = styled(Modal)`
-    & .modal-content {
-        background-color: ${colors.background1};
-    }
-    justify-content:space-between;
-    button {
-        background-color: ${colors.highlight1};
-        margin-left: 20px;
-        margin-top: 10px;
-    }
 
-    button:hover {
-        background-color: ${colors.highlight3};
-    }
+    justify-content:space-between;
+  & button {
+    background-color: ${colors.highlight1};
+    color: black;
+    border: none;
+  }
+  & button:hover {
+    background-color: ${colors.highlight3};
 `;
 
 export const StyledNavbar = styled.div`
@@ -44,6 +41,7 @@ export const StyledNavbar = styled.div`
     padding:23px;
     font-size:20px;
     font-family: MyFont, serif;
+    cursor: pointer;
   }
 
   .settings {
@@ -63,14 +61,31 @@ export const StyledNavbar = styled.div`
     padding:10px;
   }
 
+  .active {
+    background-color:${colors.highlight1};
+    text-decoration:white wavy underline;
+  }
+
   .search button {
     color:black;
     background-color: ${colors.highlight1};
+  }
+  
+  .nohover:hover {
+    background-color:white;
   }
 
   .search button:hover {
     text-decoration: white wavy underline;
     background-color: ${colors.highlight1};
+  }
+
+  .signLink {
+    margin-left:auto;
+    div  {
+      display:inline-block;
+      height:100%;
+    }
   }
 
 
@@ -79,8 +94,8 @@ export const StyledNavbar = styled.div`
   .nav-header {
     margin:0 25px;
     font-size:30px;
-    padding-top:10px;
-    font-family: MyFont;
+    padding-top:15px;
+    font-family: MyFont, serif;
     font-weight:bold;
   }
 
@@ -163,3 +178,45 @@ export const StyledList = styled(Container)`
         background-color:${colors.highlight3};
     }
 `;
+
+export const StyledNavbarComponent = ({user, currentPage, search, setSearch, handleSearch}) => {
+    const navigate = useNavigate();
+    const handleOutfitLink = () => {
+        navigate("/outfits");
+    };
+
+    const handleOutfitCreatorLink = () => {
+        navigate("/outfit-creator");
+    }
+
+    const handleClosetLink = () => {
+        navigate("/closet");
+    }
+
+    return (
+        <StyledNavbar expand="lg" sticky="top">
+            {!currentPage.includes("Creator") ?
+                <div className="nav-header">{user}'s {currentPage}</div>
+                :
+                <div className="nav-header">{currentPage}</div>}
+
+            <div className={currentPage.includes("Closet")  ? "nav-link active" : "nav-link"} onClick={handleClosetLink}>Closet</div>
+            <div className={currentPage.includes("Outfits")  ? "nav-link active" : "nav-link"} onClick={handleOutfitLink}>Outfits</div>
+            <div className={currentPage.includes("Creator")  ? "nav-link active" : "nav-link"} onClick={handleOutfitCreatorLink}>Outfit Creator Tool</div>
+            <div className="nav-link search">         <StyledSearchBar><Form className="d-flex">
+                <Form.Control
+                    type="search"
+                    placeholder="Find my favorite item"
+                    className="me-2"
+                    aria-label="Search"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
+                <Button variant="outline-success"  onClick={handleSearch}>Search</Button>
+            </Form></StyledSearchBar> </div>
+            <div className="nav-link settings right"><SettingFilled /></div>
+
+
+        </StyledNavbar>
+    )
+}

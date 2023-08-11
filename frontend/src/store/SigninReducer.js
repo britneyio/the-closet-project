@@ -1,4 +1,4 @@
-import { SET_TOKEN, SET_CURRENT_USER, UNSET_CURRENT_USER } from "./SigninTypes";
+import { SET_TOKEN, SET_CURRENT_USER, UNSET_CURRENT_USER } from "./types";
 
 const initialState = {
     isAuthenticated: false,

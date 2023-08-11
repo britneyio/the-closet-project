@@ -7,8 +7,9 @@ import {
 } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { signin } from "./SigninActions";
+import { signin } from "../../middleware/SigninActions";
 import withRouter from "../../withRouter";
+import {StyledModal} from "../../common/inputs";
 class SigninModal extends Component {
     constructor(props) {
         super(props);
@@ -31,7 +32,7 @@ class SigninModal extends Component {
     }
     render() {
         return (
-            <Modal
+            <StyledModal
             show={this.props.isOpenIn}
             onHide={this.props.closeModalIn}>
                 <Modal.Header closeButton>
@@ -69,7 +70,7 @@ class SigninModal extends Component {
                     onClick={this.onSigninClick}>Sign in</Button>
                     <p className="mt-2">Don't have an account? <Link to="/signup">Signin</Link></p>
                     </Modal.Footer>
-           </Modal>
+           </StyledModal>
         );
     }
 }

@@ -1,26 +1,33 @@
 import axios from 'axios';
-import { toastOnError } from '../../utils/Utils';
-import { GET_TYPES, ADD_TYPE, DELETE_TYPE, UPDATE_TYPE } from './TypeTypes';
+import { toastOnError } from '../utils/Utils';
+import { GET_OUTFITS, ADD_OUTFIT, DELETE_OUTFIT, UPDATE_OUTFIT } from '../store/types';
 
 // returns list of clothing
-export const getTypes = () => dispatch => {
-    axios.get('/api/v1/clothingtype/')
+export const getOutfits = () => dispatch => {
+    axios.get('/api/v1/outfit/')
     .then(response => {
         dispatch({
-            type: GET_TYPES,
+            type: GET_OUTFITS,
             payload: response.data
         });
+
     }).catch(error => {
         toastOnError(error);
     });
 };
 
 // adds an item to the list of clothing
-export const addType = type => dispatch => {
-    axios.post('/api/v1/clothingtype/', type)
+const config = {
+    headers: {
+        'Content-Type': 'multipart/form-data',
+    },
+};
+
+export const addOutfit = item => dispatch => {
+    axios.post('/api/v1/outfit/', item)
     .then(response => {
         dispatch({
-            type: ADD_TYPE,
+            type: ADD_OUTFIT,
             payload: response.data
         });
     }).catch(error => {
@@ -29,11 +36,11 @@ export const addType = type => dispatch => {
 };
 
 // deletes an item
-export const deleteType = id => dispatch => {
-    axios.delete(`/api/v1/clothingtype/${id}/`)
+export const deleteOutfit = id => dispatch => {
+    axios.delete(`/api/v1/outfit/${id}/`)
     .then(response => {
         dispatch({
-            type: DELETE_TYPE,
+            type: DELETE_OUTFIT,
             payload: id
         });
     }).catch(error => {
@@ -42,14 +49,15 @@ export const deleteType = id => dispatch => {
 };
 
 // updates an item
-export const updateType = (id, type) => dispatch => {
-    axios.put(`/api/v1/clothingtype/${id}/`, type)
+export const updateOutfit = (id, item) => dispatch => {
+    axios.put(`/api/v1/outfit/${id}/`, item)
     .then(response => {
         dispatch({
-            type: UPDATE_TYPE,
+            type: UPDATE_OUTFIT,
             payload: response.data
         });
     }).catch(error => {
         toastOnError(error);
     });
 };
+

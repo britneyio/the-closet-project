@@ -1,35 +1,35 @@
 import React, { useState, useEffect } from "react";
 import { Form, Navbar, Nav, Pagination, Button } from "react-bootstrap";
 import { connect, useDispatch, useSelector} from 'react-redux';
-import { signout } from '../signin/SigninActions';
+import { signout } from '../../middleware/SigninActions';
 import ClothingList from "../clothing/ClothingList";
 import AddClothingItem from "../clothing/AddClothingItem";
 import withRouter from "../../withRouter";
 import TypeList from "../types/TypeList";
-import { getTypes } from "../types/TypeActions";
-import { getClothing } from '../clothing/ClothingActions';
+import { getTypes } from "../../middleware/TypeActions";
+import { getClothing } from '../../middleware/ClothingActions';
 import './closet.css';
 import {SettingFilled} from '@ant-design/icons';
-import {StyledModal, StyledPagination, StyledNavbar, StyledSearchBar, FlexWrapper, HomeStyles, PageContainer} from '../../common/inputs';
+import {StyledNavbarComponent, FlexWrapper, HomeStyles, PageContainer} from '../../common/inputs';
+import colors from "../../common/colors";
 import { useNavigate } from "react-router";
-
 const selectClothing = state => state.clothing; 
 const selectTypes = state => state.types;
 const selectAuth = state => state.auth;
-function Closet(props) {
+
+export default function Closet(props) {
   const [state, setState] = useState(false);
   const dispatch = useDispatch();
   const [clothing, setClothing] = useState([]);
-  const types = useSelector(selectTypes);
+  const [types, setTypes] = useState([]);
+  const typesData = useSelector(selectTypes);
   const clothingData = useSelector(selectClothing);
   const [search, setSearch] = useState("");
   const [isSearching, setSearching] = useState(false);
   const navigate = useNavigate();
   const {user}= useSelector(selectAuth);
-  console.log(clothingData);
-
   const onSignout = () => {
-    props.signout();
+    dispatch(signout());
   };
 
   useEffect(() => {
@@ -39,7 +39,7 @@ function Closet(props) {
  const init = async () => {
   dispatch(getClothing());
   dispatch(getTypes());
- 
+
  }
 
   const typeIsClicked = (itemName) => {
@@ -57,78 +57,26 @@ function Closet(props) {
             || c.ctype.includes(search)))
     
   }
-  
-  
+
 const openModalAdd = () => setState(true);
 const closeModalAdd = () => setState(false);
-
-const handleOutfitLink = () => {
-  navigate("/outfits");
-};
-
-const handleOutfitCreatorLink = () => {
-  navigate("/outfit-creator");
-}
 
     return (
       <FlexWrapper>
          <HomeStyles />
          <PageContainer> 
-      <StyledNavbar expand="lg" sticky="top">
-        <div className="nav-header">{user.username}'s Closet</div>
-        <div className="nav-link" onClick={handleOutfitLink}>Outfits</div>
-        <div className="nav-link" onClick={handleOutfitCreatorLink}>Outfit Creator Tool</div>
-        {/* <div className="nav-link">Home</div> */}
-        <div className="nav-link search">         <StyledSearchBar><Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Find my favorite item"
-              className="me-2"
-              aria-label="Search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <Button variant="outline-success"  onClick={handleSearch}>Search</Button>
-          </Form></StyledSearchBar> </div>
-        <div className="nav-link settings right"><SettingFilled /></div>
+    <StyledNavbarComponent user={user.username} currentPage={"Closet"} search={search} setSearch={setSearch} handleSearch={handleSearch}/>
 
-
-    </StyledNavbar>
-
-     
-
-        {state ? 
             <AddClothingItem
                 closeModalAdd={closeModalAdd}
                 isOpenAdd={state}
-                types={types}
-                /> : null }
-        <TypeList isClicked={typeIsClicked} />
-        <Button style={{marginLeft: "300px"}}onClick={openModalAdd}>Add Item</Button>
+                types={typesData}
+                />
+        <TypeList types={types.length > 0 ? types : typesData.types} isClicked={typeIsClicked} />
+        <Button style={{margin: "25px 0 0 250px ", backgroundColor:colors.highlight1, border:"none", color:"black"}}onClick={openModalAdd}>Add Item</Button>
 
           <ClothingList clothing={clothing.length > 0 ? clothing : clothingData.clothing } />
           </PageContainer>
-{/* <StyledPagination>
-          <Pagination size="sm">
-      <Pagination.First />
-      <Pagination.Prev />
-      <Pagination.Item active>{1}</Pagination.Item>
-      <Pagination.Ellipsis />
-
-      <Pagination.Item>{3}</Pagination.Item>
-  
-
-      <Pagination.Ellipsis />
-      <Pagination.Item>{5}</Pagination.Item>
-      <Pagination.Next />
-      <Pagination.Last />
-    </Pagination> 
-    </StyledPagination> */}
-          
       </FlexWrapper>
     );
   }
-
-
-
-export default (withRouter(Closet));

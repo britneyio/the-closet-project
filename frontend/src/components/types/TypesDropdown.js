@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Form } from 'react-bootstrap';
 import withRouter from '../../withRouter';
 import { connect } from "react-redux";
-import { getTypes } from './TypeActions';
+import { getTypes } from '../../middleware/TypeActions';
 function TypesDropdown(props){
 
         const { types } = props.types;

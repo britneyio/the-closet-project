@@ -3,9 +3,10 @@ import { Card, Button, ListGroup } from 'react-bootstrap';
 import withRouter from '../../withRouter';
 import { connect } from "react-redux";
 import styled from 'styled-components';
-import { updateOutfit } from './OutfitActions';
+import { updateOutfit } from '../../middleware/OutfitActions';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import UpdateOutfit from "./UpdateOutfit";
 
 const StyledCard = styled(Card)`
  & .card-img-top {
@@ -106,15 +107,14 @@ function Outfit(props) {
       </ListGroup>
                        
                       
-                <Button size="sm" onClick={() => setState(true)}>Edit</Button>
-                {/* {state ? 
-                    <UpdateModal
+                <Button size="sm" onClick={() => setState(true)} style={{color:'black'}}>Edit</Button>
+
+                    <UpdateOutfit
                         closeModalUpdate={closeModalUpdate}
                         isOpenUpdate={state}
-                        item={outfit}
+                        outfit={outfit}
                         types={props.outfit}
-                        /> : null
-                } */}
+                        />
                 
                 </Card.Body>
             </StyledCard>

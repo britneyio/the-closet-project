@@ -4,7 +4,7 @@ import {
     CREATE_USER_ERROR,
     CREATE_USER_SUBMITTED,
     CREATE_USER_SUCCESS
-  } from "./SignupTypes";
+  } from "../store/types";
 
   export const signupUser = userData => dispatch => {
       dispatch({ type: CREATE_USER_SUBMITTED});

@@ -3,13 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import withRouter from '../../withRouter';
 import { Button, Form, FormSelect, Modal } from 'react-bootstrap';
-import { addItem } from './ClothingActions';
+import { addItem } from '../../middleware/ClothingActions';
 import TypesDropdown from '../types/TypesDropdown';
+import {StyledModal} from "../../common/inputs";
 
-
-AddClothingItem.defaultProps = {
-
-}
 function AddClothingItem(props) {
     const [cname, setName] = useState('');
     const [date, setWorn] = useState('');
@@ -36,7 +33,7 @@ function AddClothingItem(props) {
 
 
         return (
-                            <Modal
+                            <StyledModal
             show={props.isOpenAdd}
             onHide={props.closeModalAdd}>
                 <Modal.Header closeButton>
@@ -101,7 +98,7 @@ function AddClothingItem(props) {
                 <Modal.Footer>
                    
                     </Modal.Footer>
-                </Modal>
+                </StyledModal>
         );
     }
     

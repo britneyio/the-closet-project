@@ -1,4 +1,4 @@
-import {  GET_OUTFITS, ADD_OUTFIT, DELETE_OUTFIT, UPDATE_OUTFIT} from "./OutfitType";
+import {  GET_OUTFITS, ADD_OUTFIT, DELETE_OUTFIT, UPDATE_OUTFIT} from "./types";
 
 const initialState = {
     outfits: []
