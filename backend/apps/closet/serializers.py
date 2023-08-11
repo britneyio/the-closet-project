@@ -7,11 +7,11 @@ class ClothingTypeSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 class ClothingItemSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super(ClothingItemSerializer, self).__init__(*args, **kwargs)
-        user = self.context['request'].user
-        self.fields['ctype'] = serializers.SlugRelatedField(slug_field='name',queryset=ClothingType.objects.filter(user=user))
-
+    # def __init__(self, *args, **kwargs):
+    #     super(ClothingItemSerializer, self).__init__(*args, **kwargs)
+    #     user = self.context['request'].user
+    #     self.fields['ctype'] = serializers.SlugRelatedField(slug_field='name',queryset=ClothingType.objects.filter(user=user))
+    ctype =serializers.SlugRelatedField(slug_field='name',queryset=ClothingType.objects.all())
     cover = serializers.ImageField()
     class Meta:
         model = ClothingItem
@@ -24,7 +24,8 @@ class ClothingItemSerializer(serializers.ModelSerializer):
     #         ClothingType.objects.create()
 
 class OutfitSerializer(serializers.ModelSerializer):
-    items = serializers.SlugRelatedField(many=True, slug_field='name', read_only=True)
+    items = ClothingItemSerializer(many=True)
+
     class Meta:
         model = Outfit
         fields = ('id', 'name','about','worn','items')
