@@ -25,7 +25,7 @@ export default function Type(props)  {
 
     const { type } = props;
         return (
-            <MyNavButtons onClick={(e) => {props.isClicked(type.name); e.stopPropagation()}} >
+            <MyNavButtons onClick={(e) => {props.isClicked(type.name); e.stopPropagation()}} className={"types"}>
                 <Nav.Link> {type.name} </Nav.Link>
                 <Dropdown style={{position:"absolute",top:0,right:0}} onClick={(e) => e.stopPropagation()}>
                     <Dropdown.Toggle id={'dropdown-custom-1'} style={{backgroundColor:'transparent', border:'none',color:'black'}}>

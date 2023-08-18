@@ -16,6 +16,7 @@ import ClothingCarousel from '../carousel/ClothingCarousel';
 import { getClothing } from '../../middleware/ClothingActions';
 import colors from '../../common/colors';
 import CreatorSpace from "./CreatorSpace";
+import AddOutfit from "../outfits/AddOutfit";
 
 
 
@@ -61,11 +62,11 @@ export default function OutfitCreator() {
           if (current.includes(item)) {
               let i = current.indexOf(item)
               current.splice(i,1)
-              setSelected(current);
+              setSelected([...current]);
 
           } else {
               current.push(item)
-              setSelected(current);
+              setSelected([...current]);
 
           }
       }
@@ -86,9 +87,10 @@ export default function OutfitCreator() {
 
 
                  <TypeList types={types.types} isClicked={typeIsClicked} />
-            {/* <Button style={{marginLeft: "300px"}}onClick={openModalAdd}>Add Item</Button> */}
              <ClothingCarousel clothing={clothing.length > 0 ? clothing : clothingData.clothing } isClicked={imageIsClicked}/>
+                 <AddOutfit items={selected}/>
                  <CreatorSpace items={selected} />
+
               </PageContainer>
               
           </FlexWrapper>

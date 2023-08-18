@@ -32,6 +32,7 @@ export const addOutfit = item => dispatch => {
         });
     }).catch(error => {
         toastOnError(error);
+        console.log(error);
     });
 };
 

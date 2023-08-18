@@ -88,6 +88,8 @@ export const StyledNavbar = styled.div`
       display:inline-block;
       height:100%;
     }
+    
+    
   }
 
 
@@ -105,13 +107,54 @@ export const StyledNavbar = styled.div`
     background-color:${colors.highlight3};
   }
 
+  @media screen and (max-width: 480px) {
+    max-width: 100%;
+    width: 100%;
+    display:block;
+    
+
+
+    .nav-header {
+      margin:0;
+      font-size:30px;
+      padding-top:15px;
+      font-family: MyFont, serif;
+      font-weight:bold;
+      text-align:center;
+    }
+
+
+    .search {
+      padding:0;
+    }
+
+    .nav-link {
+      margin:0;
+      padding:0;
+      font-size:15px;
+      font-family: MyFont, serif;
+      cursor: pointer;
+    }
+    
+    .search {
+      margin-top:15px;
+    }
+
+    .settings {
+      padding:0;
+    }
+
+
+
+  }
+
 `;
 
 export const HomeStyles = createGlobalStyle`
   body {
   background-color:white;
   overflow-x:hidden;
-  font-family:MyFont;
+  font-family:MyFont, sans-serif;
   }
   
 `;
@@ -143,16 +186,18 @@ export const StyledSearchBar = styled.div`
 export const PageContainer = styled.div`
 position: relative;
 min-height: 100vh;
+  @media screen and (max-width: 480px) {
+    overflow-x:hidden;
+  }
 `;
 
 
 export const FlexWrapper = styled.div`
 display:flex;
 flex-direction:column;
-align-items:space-between;
-${StyledPagination} {
-
-}
+  @media screen and (max-width: 480px) {
+    flex-direction: row;
+  }
 `;
 
 export const StyledList = styled(Container)`
@@ -183,13 +228,12 @@ export const StyledList = styled(Container)`
 
 export const StyledNavbarComponent = ({user, currentPage, search, setSearch, handleSearch}) => {
     const [state, setState] = useState(false);
-    const openModalAdd = () => {setState(true); console.log("hji")};
+    const openModalAdd = () => {setState(true);};
     const closeModalAdd = () => setState(false);
     const navigate = useNavigate();
     const handleOutfitLink = () => {
         navigate("/outfits");
     };
-
     const handleOutfitCreatorLink = () => {
         navigate("/outfit-creator");
     }
@@ -199,12 +243,11 @@ export const StyledNavbarComponent = ({user, currentPage, search, setSearch, han
     }
 
     return (
-        <StyledNavbar expand="lg" sticky="top">
+        <StyledNavbar  sticky="top">
             {!currentPage.includes("Creator") ?
-                <div className="nav-header">{user.username}'s {currentPage}</div>
+                <div className="nav-header">{`${user.username}'s ${currentPage}`}</div>
                 :
                 <div className="nav-header">{currentPage}</div>}
-
             <div className={currentPage.includes("Closet")  ? "nav-link active" : "nav-link"} onClick={handleClosetLink}>Closet</div>
             <div className={currentPage.includes("Outfits")  ? "nav-link active" : "nav-link"} onClick={handleOutfitLink}>Outfits</div>
             <div className={currentPage.includes("Creator")  ? "nav-link active" : "nav-link"} onClick={handleOutfitCreatorLink}>Outfit Creator Tool</div>

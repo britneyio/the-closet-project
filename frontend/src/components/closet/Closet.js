@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Form, Navbar, Nav, Pagination, Button } from "react-bootstrap";
-import { connect, useDispatch, useSelector} from 'react-redux';
+import {Button } from "react-bootstrap";
+import { useDispatch, useSelector} from 'react-redux';
 import { signout } from '../../middleware/SigninActions';
 import ClothingList from "../clothing/ClothingList";
 import AddClothingItem from "../clothing/AddClothingItem";
-import withRouter from "../../withRouter";
 import TypeList from "../types/TypeList";
 import { getTypes } from "../../middleware/TypeActions";
 import { getClothing } from '../../middleware/ClothingActions';
 import './closet.css';
-import {SettingFilled} from '@ant-design/icons';
 import {StyledNavbarComponent, FlexWrapper, HomeStyles, PageContainer} from '../../common/inputs';
 import colors from "../../common/colors";
 import { useNavigate } from "react-router";
@@ -26,8 +24,8 @@ export default function Closet(props) {
   const clothingData = useSelector(selectClothing);
   const [search, setSearch] = useState("");
   const [isSearching, setSearching] = useState(false);
-  const navigate = useNavigate();
   const {user}= useSelector(selectAuth);
+  const [navState, setNavState] = useState(true);
   const onSignout = () => {
     dispatch(signout());
   };
@@ -67,15 +65,16 @@ const closeModalAdd = () => setState(false);
          <PageContainer> 
     <StyledNavbarComponent user={user} currentPage={"Closet"} search={search} setSearch={setSearch} handleSearch={handleSearch}/>
 
-            <AddClothingItem
-                closeModalAdd={closeModalAdd}
-                isOpenAdd={state}
-                types={typesData}
-                />
-        <TypeList types={types.length > 0 ? types : typesData.types} isClicked={typeIsClicked} />
+
+        <TypeList types={types.length > 0 ? types : typesData.types} isClicked={typeIsClicked} navState={navState} setNavState={setNavState}/>
+             <AddClothingItem
+                 closeModalAdd={closeModalAdd}
+                 isOpenAdd={state}
+                 types={typesData}
+             />
         <Button style={{margin: "25px 0 0 250px ", backgroundColor:colors.highlight1, border:"none", color:"black"}}onClick={openModalAdd}>Add Item</Button>
 
-          <ClothingList clothing={clothing.length > 0 ? clothing : clothingData.clothing } />
+             <ClothingList clothing={clothing.length > 0 ? clothing : clothingData.clothing } navState={navState}/>
           </PageContainer>
       </FlexWrapper>
     );

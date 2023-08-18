@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
 import { useDispatch} from 'react-redux';
-import  withRouter from '../../withRouter';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { addType } from '../../middleware/TypeActions';
 
-function AddClothingType(props) {
+export default function AddType(props) {
     const [name, setName] = useState('');
     const dispatch = useDispatch();
     const onAddClick = () => {
@@ -15,8 +14,8 @@ function AddClothingType(props) {
 
         return (
                             <Modal
-            show={props.isOpenTypeAdd}
-            onHide={props.closeModalTypeAdd}>
+            show={props.isOpenAdd}
+            onHide={props.closeModalAdd}>
                 <Modal.Header closeButton>
                     <Modal.Title>
                     <h2>Add new type</h2>
@@ -37,7 +36,7 @@ function AddClothingType(props) {
                     </Form.Group>          
                 </Form>
                 <Button  color="primary"
-                    onClick={() => onAddClick()}>Create</Button>
+                    onClick={() => onAddClick()}>Add</Button>
                 </Modal.Body>
                 </Modal>
         );
@@ -46,5 +45,4 @@ function AddClothingType(props) {
 
 
 
-export default (withRouter(AddClothingType));
 

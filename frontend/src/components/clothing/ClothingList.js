@@ -28,6 +28,26 @@ const StyledList = styled(Container)`
     .card button:hover {
         background-color:${colors.highlight3};
     }
+
+  @media screen and (max-width: 480px) {
+    gap:0;
+    padding:0;
+    top:150px;
+    left:0;
+    display: ${props => props.navState ? 'none' : 'block'};
+    .card {
+      width: 300px;
+      margin:20px auto;
+    }
+
+    .card button {
+      margin: 10px 0;
+      background-color:${colors.highlight1};
+      border: none;
+    }
+
+
+  }
 `;
 
 
@@ -42,7 +62,7 @@ export default function ClothingList(props) {
 
         return(
               
-            <StyledList>
+            <StyledList navState={props.navState}>
               {items}
               </StyledList>
         );

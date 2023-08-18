@@ -60,8 +60,9 @@ function Outfits(props) {
 
 
   const handleSearch = (e) => {
-    // setClothing(clothingData.clothing.filter(c => c.name.includes(search)
-    //         || c.ctype.includes(search)))
+    setOutfits(outfits.filter(o => o.name.includes(search)
+      || o.items.filter(c => c.name.includes(search)
+            || c.ctype.includes(search))))
     
   }
   
@@ -91,7 +92,7 @@ const handleAddOutfit = () => {
                 types={types}
                 /> : null }
         <TypeList types={types.types} isClicked={typeIsClicked} />
-          <OutfitList outfits={outfits} />
+          <OutfitList outfits={fit.length > 0 ? fit : outfits} />
           </PageContainer>
 {/*<StyledPagination>*/}
 {/*          <Pagination size="sm">*/}
