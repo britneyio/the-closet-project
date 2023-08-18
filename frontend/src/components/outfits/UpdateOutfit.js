@@ -59,7 +59,7 @@ export default function UpdateOutfit(props) {
     };
     const onUpdateClick = async ()  => {
         const formData = new FormData();
-        const im = createFiles(images)
+       
         formData.append('images', im);
         formData.append('name', cname);
         formData.append('worn', date);

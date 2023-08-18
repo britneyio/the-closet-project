@@ -40,17 +40,7 @@ export const signout = () => dispatch => {
         toastOnError(error);
     })
 }
-// uses GET request the current user data 
-export const getCurrentUser = redirectTo => dispatch => {
-    axios.get("/api/v1/users/me")
-    .then(response => {
-        const user = {
-            username: response.data.username,
-            email: response.data.email
-        };
-        dispatch(setCurrentUser(user, redirectTo));
-    })
-}
+
 
 // store the current user variable into the localStorage and auth store
 // if redirectTo isn't empty then a routing to its URL is pushed to history
@@ -72,7 +62,7 @@ export const setToken = token => dispatch => {
     localStorage.setItem("token", token);
     dispatch({
         type: SET_TOKEN,
-        paylod: token
+        payload: token
     });
 };
 

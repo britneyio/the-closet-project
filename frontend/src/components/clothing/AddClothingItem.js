@@ -1,19 +1,18 @@
-import React, { Component , useState, useCallback} from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import withRouter from '../../withRouter';
+import React, {  useState} from 'react';
+import { useDispatch} from 'react-redux';
+
 import { Button, Form, FormSelect, Modal } from 'react-bootstrap';
 import { addItem } from '../../middleware/ClothingActions';
 import TypesDropdown from '../types/TypesDropdown';
 import {StyledModal} from "../../common/inputs";
 
-function AddClothingItem(props) {
+export default function AddClothingItem(props) {
     const [cname, setName] = useState('');
     const [date, setWorn] = useState('');
     const [type, setCtype] = useState('');
     const [loc, setLocation] = useState('');
     const [cov, setCover] = useState(null); 
-
+    const dispatch = useDispatch();
 
     
     const handleCover = (e) => {
@@ -26,8 +25,7 @@ function AddClothingItem(props) {
             formData.append('location',loc);
             formData.append('worn', date);
             formData.append('ctype',type);
-            console.log(cov);
-            props.addItem(formData);
+            dispatch(addItem(formData));
         
         };
 
@@ -103,10 +101,5 @@ function AddClothingItem(props) {
     }
     
 
-AddClothingItem.propTypes = {
-    addItem: PropTypes.func.isRequired
-};
 
-const mapStateToProps = state => ({});
 
-export default connect(mapStateToProps, {addItem})(withRouter(AddClothingItem));

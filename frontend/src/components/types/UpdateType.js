@@ -21,11 +21,10 @@ export default function UpdateType(props) {
         const { type } = props;
         dispatch(deleteType(type.id));
     };
-    const onUpdateClick =  ()  => {
+    const onUpdateClick =  async ()  => {
         const formData = new FormData();
         formData.append('name', name);
         dispatch(updateType(type.id,formData));
-        console.log('updated')
 
     };
 

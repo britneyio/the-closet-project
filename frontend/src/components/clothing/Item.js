@@ -1,10 +1,7 @@
-import React, { Component, useState } from 'react';
-import PropTypes from 'prop-types';
-import { deleteItem, updateItem} from '../../middleware/ClothingActions';
+import React, { useState } from 'react';
+
 import { Card, Button, ListGroup } from 'react-bootstrap';
-import withRouter from '../../withRouter';
 import UpdateModal from './UpdateModal';
-import {connect, useDispatch} from "react-redux";
 import styled from 'styled-components';
 
 const StyledCard = styled(Card)`

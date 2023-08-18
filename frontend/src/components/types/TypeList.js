@@ -59,7 +59,7 @@ export default function TypeList(props) {
             return <h2>Please add your first type</h2>;
         }
         let typeList = props.types.map(t =>
-                <Type  key={t.id} type={t} isClicked={props.isClicked}/>);
+                <Type  key={t.id} type={t} isClicked={props.isClicked} />);
 
         return (
 <>

@@ -31,7 +31,7 @@ export const typeReducer = (state = initialState, action) => {
             });
             return {
                 ...state,
-                clothing: updatedTypes
+                types: updatedTypes
             };
         default: 
             return state;

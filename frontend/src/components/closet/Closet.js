@@ -65,7 +65,7 @@ const closeModalAdd = () => setState(false);
       <FlexWrapper>
          <HomeStyles />
          <PageContainer> 
-    <StyledNavbarComponent user={user.username} currentPage={"Closet"} search={search} setSearch={setSearch} handleSearch={handleSearch}/>
+    <StyledNavbarComponent user={user} currentPage={"Closet"} search={search} setSearch={setSearch} handleSearch={handleSearch}/>
 
             <AddClothingItem
                 closeModalAdd={closeModalAdd}

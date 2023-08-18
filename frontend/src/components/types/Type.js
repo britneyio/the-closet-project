@@ -37,7 +37,7 @@ export default function Type(props)  {
                         </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
-                 <UpdateType type={type} isOpenUpdate={state} closeModalUpdate={closeModalUpdate} />
+                 <UpdateType type={type} isOpenUpdate={state} closeModalUpdate={closeModalUpdate}/>
 
             </MyNavButtons>
 

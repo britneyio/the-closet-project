@@ -80,7 +80,7 @@ const handleAddOutfit = () => {
       <FlexWrapper>
          <HomeStyles />
          <PageContainer>
-             <StyledNavbarComponent user={user.username} currentPage={"Outfits"} search={search} setSearch={setSearch} handleSearch={handleSearch}/>
+             <StyledNavbarComponent user={user} currentPage={"Outfits"} search={search} setSearch={setSearch} handleSearch={handleSearch}/>
 
 
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import {Modal, Navbar, Container, Form, Button} from 'react-bootstrap';
 import colors from './colors';
@@ -6,6 +6,8 @@ import { ModalHeader } from './fonts';
 import {createGlobalStyle} from 'styled-components';
 import {SettingFilled} from "@ant-design/icons";
 import {useNavigate} from "react-router";
+import AddClothingItem from "../components/clothing/AddClothingItem";
+import UserSettings from "../components/closet/UserSettings";
 export const StyledModal = styled(Modal)`
 
     justify-content:space-between;
@@ -180,6 +182,9 @@ export const StyledList = styled(Container)`
 `;
 
 export const StyledNavbarComponent = ({user, currentPage, search, setSearch, handleSearch}) => {
+    const [state, setState] = useState(false);
+    const openModalAdd = () => {setState(true); console.log("hji")};
+    const closeModalAdd = () => setState(false);
     const navigate = useNavigate();
     const handleOutfitLink = () => {
         navigate("/outfits");
@@ -196,7 +201,7 @@ export const StyledNavbarComponent = ({user, currentPage, search, setSearch, han
     return (
         <StyledNavbar expand="lg" sticky="top">
             {!currentPage.includes("Creator") ?
-                <div className="nav-header">{user}'s {currentPage}</div>
+                <div className="nav-header">{user.username}'s {currentPage}</div>
                 :
                 <div className="nav-header">{currentPage}</div>}
 
@@ -214,7 +219,13 @@ export const StyledNavbarComponent = ({user, currentPage, search, setSearch, han
                 />
                 <Button variant="outline-success"  onClick={handleSearch}>Search</Button>
             </Form></StyledSearchBar> </div>
-            <div className="nav-link settings right"><SettingFilled /></div>
+            <div className="nav-link settings right" onClick={openModalAdd}><SettingFilled /></div>
+
+            <UserSettings
+                closeModalUpdate={closeModalAdd}
+                isOpenUpdate={state}
+                user={user}
+            />
 
 
         </StyledNavbar>

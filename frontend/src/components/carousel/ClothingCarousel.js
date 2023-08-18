@@ -57,29 +57,26 @@ ClothingCarousel.defaultProps = {
 }
 export default function ClothingCarousel(props) { 
     const [isClicked, setIsClicked] = useState([]);
-    const [items, setItems] = useState([]);
+    // const [items, setItems] = useState([]);
 
-    const init = async () => {
-        let unclicked = props.clothing.map((item,index) =>  {
+    let items = props.clothing.map((item,index) =>  {
             if (isClicked[index]) {
-               return <ItemCard key={item.id} onClick={() => {handleClick(index)}} style={{backgroundColor:"red"}}>
+               return <ItemCard key={item.id} onClick={() => {props.isClicked(item); handleClick(index); }} style={{backgroundColor:"red"}}>
                     <img  style={{height:"150px", width:"150px"}} src={item.cover} />
+                   <p>{item.name}</p>
                 </ItemCard>;
             }
-            return <ItemCard key={item.id} onClick={() => handleClick(index)} >
+            return <ItemCard key={item.id} onClick={() => {props.isClicked(item); handleClick(index);}} >
                 <img  style={{height:"150px", width:"150px"}} src={item.cover} />
+                <p>{item.name}</p>
             </ItemCard>;
         });
 
 
 
-        await setItems(unclicked);
-
-    }
-
-    useEffect(() => {
-        init();
-    }, [items]);
+    // useEffect(() => {
+    //     init();
+    // }, [items]);
 
     if (props.clothing.length === 0) {
         return <h2>Please add your first item</h2>;
@@ -89,10 +86,6 @@ export default function ClothingCarousel(props) {
         let clicked = isClicked;
         clicked[id] = !isClicked[id];
         setIsClicked([...clicked]);
-
-
-
-
     }
 
 
@@ -108,7 +101,7 @@ export default function ClothingCarousel(props) {
   showDots={true}
   responsive={responsive}
   ssr={true}
-  infinite={true}
+  infinite={false}
   autoPlay={false}
   autoPlaySpeed={1000}
   keyBoardControl={true}
