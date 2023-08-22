@@ -22,8 +22,8 @@ const responsive = {
   };
 
   const ItemCard = styled.div`
-    height:300px;
-    width: 300px;
+    height:200px;
+    width: 200px;
     text-align:center;
     img {
       margin: 10px 20px;
@@ -44,9 +44,11 @@ const StyledCarousel = styled.div`
     margin-top: 10px;
     margin-bottom:10px;
     box-shadow: 3px 3px 5px gray;
+  
+    background-color: ${colors.highlight1};
 
     img {
-      border: 1px solid ${colors.highlight1};
+      border: 1px solid white;
 
     }
 
@@ -61,13 +63,13 @@ export default function ClothingCarousel(props) {
 
     let items = props.clothing.map((item,index) =>  {
             if (isClicked[index]) {
-               return <ItemCard key={item.id} onClick={() => {props.isClicked(item); handleClick(index); }} style={{backgroundColor:"red"}}>
-                    <img  style={{height:"150px", width:"150px"}} src={item.cover} />
+               return <ItemCard key={item.id} onClick={() => {props.isClicked(item); handleClick(index); }} style={{backgroundColor:`white`}}>
+                    <img  style={{height:"150px", width:"150px"}} src={item.cover_file} />
                    <p>{item.name}</p>
                 </ItemCard>;
             }
-            return <ItemCard key={item.id} onClick={() => {props.isClicked(item); handleClick(index);}} >
-                <img  style={{height:"150px", width:"150px"}} src={item.cover} />
+            return <ItemCard key={item.id} onClick={() => {props.isClicked(item); handleClick(index);}} style={{backgroundColor:`${colors.highlight1}`}}>
+                <img  style={{height:"150px", width:"150px"}} src={item.cover_file} />
                 <p>{item.name}</p>
             </ItemCard>;
         });

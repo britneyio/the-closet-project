@@ -19,11 +19,12 @@ export const getOutfits = () => dispatch => {
 // adds an item to the list of clothing
 const config = {
     headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
     },
 };
 
 export const addOutfit = item => dispatch => {
+    console.log(item)
     axios.post('/api/v1/outfit/', item)
     .then(response => {
         dispatch({

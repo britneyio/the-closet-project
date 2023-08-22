@@ -24,7 +24,7 @@ export default function UpdateModal(props) {
     const [date, setWorn] = useState(item.worn);
     const [type, setCtype] = useState(item.ctype);
     const [loc, setLocation] = useState(item.location);
-    const [cov, setCover] = useState(item.cover);
+    const [cov, setCover] = useState(item.cover_file);
     const dispatch = useDispatch();
 
     const handleCover =  (e) => {
@@ -47,8 +47,9 @@ export default function UpdateModal(props) {
     };
    const onUpdateClick = async ()  => {
             const formData = new FormData();
-            const cover = cov instanceof File ? cov : await createFile(item.cover);
-            formData.append('cover', cover);
+            const cover = cov instanceof File ? cov : await createFile(item.cover_file);
+            formData.append('cover_file', cover);
+            formData.append('cover_url', cov);
             formData.append('name', cname);
             formData.append('location',loc);
             formData.append('worn', date);
@@ -107,7 +108,7 @@ onHide={props.closeModalUpdate}>
                         />
     </Form.Group>
     <Form.Group controlId="coverId">
-        <Card.Img id={"itemDesign-img"} variant="top" src={item.cover} alt={item.name} />
+        <Card.Img id={"itemDesign-img"} variant="top" src={item.cover_file} alt={item.name} />
 
         <Form.Control
             type="file"

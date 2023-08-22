@@ -8,6 +8,7 @@ import Root from "./Root";
 import axios from "axios";
 import AuthenticationComponent from './utils/RequireAuth';
 import OutfitCreator from './components/creator/OutfitCreator';
+import UpdateOutfit from "./components/outfits/UpdateOutfit";
 axios.defaults.baseURL = "http://127.0.0.1:8000";
 class App extends Component {
   render() {
@@ -32,6 +33,11 @@ class App extends Component {
               <AuthenticationComponent>
                 <OutfitCreator />
                 </AuthenticationComponent>
+            } />
+            <Route  path="/outfit-creator/:id/edit" element={
+              <AuthenticationComponent>
+                <UpdateOutfit />
+              </AuthenticationComponent>
             } />
             <Route path="*" element={<NotFound/>} />
           </Routes>

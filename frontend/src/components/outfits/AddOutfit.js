@@ -9,36 +9,16 @@ export default function AddOutfit(props) {
     const [cname, setName] = useState('');
     const [date, setWorn] = useState('');
     const [about, setAbout] = useState('');
+    const [items, setItems] = useState(props.items);
     const dispatch = useDispatch();
 
 
-    // async function createFile(input) {
-    //     let response = await fetch(input);
-    //     let data = await response.blob();
-    //     let metadata = {
-    //         type: 'image/*'
-    //     };
-    //     return new File([data], input, metadata);
-    // }
-    //
-    // const updated_items = async () => {
-    //     let a = props.items
-    //     for (const f of a) {
-    //         f.cover = await createFile(f.cover);
-    //     }
-    //     return a
-    // }
-    const onAddClick = ()  => {
-        // const formData = new FormData();
-        // formData.append('about', about);
-        // formData.append('name', cname);
-        // formData.append('worn',date);
-        // formData.append('items',items);
+    const onAddClick = async ()  => {
         const data = {
             "about":  about,
             "name": cname,
             "worn": date,
-            "items": props.items
+            "items_id": items,
         }
         dispatch(addOutfit(data));
 
@@ -47,7 +27,7 @@ export default function AddOutfit(props) {
 
     return (
 
-                <Form >
+                <Form style={{width:'50%', margin:'0 auto'}}>
                     <Form.Group controlId="nameId">
                         <Form.Label>Name:</Form.Label>
                         <Form.Control

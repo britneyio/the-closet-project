@@ -66,7 +66,7 @@ class SigninModal extends Component {
                     </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                    <Button color="primary"
+                    <Button color="primary" type={"submit"}
                     onClick={this.onSigninClick}>Sign in</Button>
                     <p className="mt-2">Don't have an account? <Link to="/signup">Signin</Link></p>
                     </Modal.Footer>

@@ -20,7 +20,8 @@ export default function AddClothingItem(props) {
     }
    const onAddClick = ()  => {
             const formData = new FormData();
-            formData.append('cover', cov);
+            formData.append('cover_file', cov);
+            formData.append('cover_url','http://127.0.0.1:8000/media/images/' + cov.name)
             formData.append('name', cname);
             formData.append('location',loc);
             formData.append('worn', date);

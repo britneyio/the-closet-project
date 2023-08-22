@@ -24,18 +24,20 @@ import OutfitList from "./OutfitList";
 const selectTypes = state => state.types;
 const selectAuth = state => state.auth;
 const selectOutfits = state => state.outfits; 
-function Outfits(props) {
+export default function Outfits(props) {
   const [state, setState] = useState(false);
   const dispatch = useDispatch();
-  const types = useSelector(selectTypes);
+  const {types} = useSelector(selectTypes);
   const [search, setSearch] = useState("");
   const [isSearching, setSearching] = useState(false);
   const navigate = useNavigate();
   const {user}= useSelector(selectAuth);
   const {outfits} = useSelector(selectOutfits);
   const [fit, setOutfits] = useState([]);
+  const [navState, setNavState] = useState(true);
 
-  const onSignout = () => {
+
+    const onSignout = () => {
     props.signout();
   };
 
@@ -91,8 +93,9 @@ const handleAddOutfit = () => {
                 isOpenAdd={state}
                 types={types}
                 /> : null }
-        <TypeList types={types.types} isClicked={typeIsClicked} />
-          <OutfitList outfits={fit.length > 0 ? fit : outfits} />
+             <TypeList types={types} isClicked={typeIsClicked} navState={navState} setNavState={setNavState}/>
+
+             <OutfitList outfits={fit.length > 0 ? fit : outfits} />
           </PageContainer>
 {/*<StyledPagination>*/}
 {/*          <Pagination size="sm">*/}
@@ -117,4 +120,3 @@ const handleAddOutfit = () => {
 
 
 
-export default (withRouter(Outfits));

@@ -12,6 +12,7 @@ export const getClothing = () => async dispatch => {
         });
 
     }).catch(error => {
+        console.log(error)
         toastOnError(error);
     });
 };

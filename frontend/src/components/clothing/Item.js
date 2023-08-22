@@ -24,7 +24,7 @@ export default function Item(props) {
         return (
 
             <StyledCard>
-                <Card.Img id={"itemDesign-img"} variant="top" src={item.cover} alt={item.name} />
+                <Card.Img id={"itemDesign-img"} variant="top" src={item.cover_file} alt={item.name} />
 
                 <Card.Body>
                     <Card.Title>

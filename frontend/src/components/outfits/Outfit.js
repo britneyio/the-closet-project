@@ -1,12 +1,13 @@
 import React, { Component, useState } from 'react';
 import { Card, Button, ListGroup } from 'react-bootstrap';
 import withRouter from '../../withRouter';
-import { connect } from "react-redux";
+import {connect, useDispatch} from "react-redux";
 import styled from 'styled-components';
 import { updateOutfit } from '../../middleware/OutfitActions';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import UpdateOutfit from "./UpdateOutfit";
+import {useNavigate} from "react-router";
 
 const StyledCard = styled(Card)`
  & .card-img-top {
@@ -18,18 +19,13 @@ const StyledCard = styled(Card)`
 
 
 
-function Outfit(props) {
-    const [state, setState] = useState(false);
-
-
-
-    const closeModalUpdate = () => setState(false);
+export default function Outfit(props) {
+    const navigate = useNavigate();
    
     const { outfit } = props;
-
     const images = outfit.items.map(item =>
-        <img 
-        src={item.cover}
+        <img key={item.id}
+        src={item.cover_file ? item.cover_file : item.cover_url}
         style={{
             display: 'block',
             height: '100%',
@@ -107,14 +103,8 @@ function Outfit(props) {
       </ListGroup>
                        
                       
-                <Button size="sm" onClick={() => setState(true)} style={{color:'black'}}>Edit</Button>
+                <Button size="sm" onClick={() => navigate(`outfit-creator/${outfit.id}/edit`)} style={{color:'black'}}>Edit</Button>
 
-                    <UpdateOutfit
-                        closeModalUpdate={closeModalUpdate}
-                        isOpenUpdate={state}
-                        outfit={outfit}
-                        types={props.outfit}
-                        />
                 
                 </Card.Body>
             </StyledCard>
@@ -124,7 +114,5 @@ function Outfit(props) {
 
 
 
-const mapStateToProps = state => ({});
 
 
-export default connect(mapStateToProps, { updateOutfit}) (withRouter(Outfit));

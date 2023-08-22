@@ -3,6 +3,7 @@ import { push } from '@lagunovsky/redux-react-router';
 import { toast } from 'react-toastify';
 import { SET_TOKEN, SET_CURRENT_USER, UNSET_CURRENT_USER } from "../store/types";
 import { setAxiosAuthToken, toastOnError } from "../utils/Utils";
+import {getCurrentUser} from "./UserActions";
 
 // post request to token/login endpoint in djoser
 export const signin = (userData, redirectTo) => dispatch => {

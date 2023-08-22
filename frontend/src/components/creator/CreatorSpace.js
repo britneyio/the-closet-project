@@ -35,7 +35,7 @@ export default function CreatorSpace(props) {
         ><img
             style={{height:"150px", width:"150px"}}
 
-            src={item.cover}
+            src={item.cover_file}
 
         /></div>
     });

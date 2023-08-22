@@ -32,13 +32,14 @@ export default function OutfitCreator() {
     const [state, setState] = useState(false);
     const dispatch = useDispatch();
     const [clothing, setClothing] = useState([]);
-    const types = useSelector(selectTypes);
+    const {types} = useSelector(selectTypes);
     const clothingData = useSelector(selectClothing);
     const [search, setSearch] = useState("");
     const [isSearching, setSearching] = useState(false);
     const [selected, setSelected] = useState([]);
-
     const {user}= useSelector(selectAuth);
+    const [navState, setNavState] = useState(true);
+
 
     useEffect(() => {
         dispatch(getTypes());
@@ -86,7 +87,7 @@ export default function OutfitCreator() {
                  <StyledNavbarComponent user={user} currentPage={"Outfit Creator Tool"} search={search} setSearch={setSearch} handleSearch={handleSearch}/>
 
 
-                 <TypeList types={types.types} isClicked={typeIsClicked} />
+                 <TypeList types={types} isClicked={typeIsClicked} navState={navState} setNavState={setNavState}/>
              <ClothingCarousel clothing={clothing.length > 0 ? clothing : clothingData.clothing } isClicked={imageIsClicked}/>
                  <AddOutfit items={selected}/>
                  <CreatorSpace items={selected} />

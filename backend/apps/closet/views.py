@@ -43,7 +43,6 @@ class OutfitViewSet(viewsets.ModelViewSet):
     queryset = Outfit.objects.all()
     
     # Overwrites the create function to save information about the creator of the outfit
-
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 

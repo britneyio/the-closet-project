@@ -1,5 +1,10 @@
 from rest_framework import serializers
 from apps.closet.models import ClothingItem, ClothingType, Outfit
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
+from urllib.request import urlopen
+
+
 
 class ClothingTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,26 +12,23 @@ class ClothingTypeSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 class ClothingItemSerializer(serializers.ModelSerializer):
-    # def __init__(self, *args, **kwargs):
-    #     super(ClothingItemSerializer, self).__init__(*args, **kwargs)
-    #     user = self.context['request'].user
-    #     self.fields['ctype'] = serializers.SlugRelatedField(slug_field='name',queryset=ClothingType.objects.filter(user=user))
+    cover_file = serializers.ImageField(use_url=True)
     ctype =serializers.SlugRelatedField(slug_field='name',queryset=ClothingType.objects.all())
-    cover = serializers.ImageField()
+
+    cover_url = serializers.URLField()
     class Meta:
         model = ClothingItem
-        fields = ('id', 'name', 'worn', 'ctype', 'location', 'cover')
+        fields = ('id', 'name', 'worn', 'ctype', 'location', 'cover_file', 'cover_url')
 
-    # def create(self, validated_data):
-    #     types_data = validated_data.pop('ctype')
-    #     item = ClothingItem.objects.create(**validated_data)
-    #     for type_data in types_data:
-    #         ClothingType.objects.create()
+
+
 
 class OutfitSerializer(serializers.ModelSerializer):
-    items = ClothingItemSerializer(many=True)
+    items = ClothingItemSerializer(read_only=True, many=True)
+    items_id = serializers.PrimaryKeyRelatedField(queryset=ClothingItem.objects.all(), source='items', read_only=False, many=True)
 
     class Meta:
         model = Outfit
-        fields = ('id', 'name','about','worn','items')
+        fields = ('id', 'name','about','worn','items', 'items_id')
+        read_only_fields = ('items',)
 
