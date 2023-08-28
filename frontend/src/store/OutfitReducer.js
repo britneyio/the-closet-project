@@ -1,4 +1,4 @@
-import {  GET_OUTFITS, ADD_OUTFIT, DELETE_OUTFIT, UPDATE_OUTFIT} from "./types";
+import {GET_OUTFITS, ADD_OUTFIT, DELETE_OUTFIT, UPDATE_OUTFIT, GET_OUTFIT_BY_ID} from "./types";
 
 const initialState = {
     outfits: []
@@ -33,6 +33,12 @@ export const outfitReducer = (state = initialState, action) => {
                 ...state,
                 outfits: updatedItems
             };
+        case GET_OUTFIT_BY_ID:
+            return {
+                ...state,
+                outfits: action.payload
+            };
+
         default: 
             return state;
     }

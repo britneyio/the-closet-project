@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
-import {Modal, Navbar, Container, Form, Button} from 'react-bootstrap';
+import {Modal, Navbar, Container, Form, Button, Nav} from 'react-bootstrap';
 import colors from './colors';
 import { ModalHeader } from './fonts';
 import {createGlobalStyle} from 'styled-components';
@@ -8,6 +8,7 @@ import {SettingFilled} from "@ant-design/icons";
 import {useNavigate} from "react-router";
 import AddClothingItem from "../components/clothing/AddClothingItem";
 import UserSettings from "../components/closet/UserSettings";
+import {Link} from "react-router-dom";
 export const StyledModal = styled(Modal)`
 
     justify-content:space-between;
@@ -18,9 +19,21 @@ export const StyledModal = styled(Modal)`
   }
   & button:hover {
     background-color: ${colors.highlight3};
+
+    & button:focus {
+      background-color: ${colors.highlight3};
+    }
+
+    & button:active {
+      background-color: ${colors.highlight3} !important;
+    }
+      ${Link} {
+      background-color: ${colors.highlight4};
+      }
+    }
 `;
 
-export const StyledNavbar = styled.div`
+export const StyledNavbar = styled(Navbar)`
   height: 80px;
   width:100%;
   display:flex;
@@ -33,9 +46,15 @@ export const StyledNavbar = styled.div`
     border: none;
   }
 
+  .navbar-brand {
+    font-size:30px;
+    margin-left:10px;
+  }
    .nav-link:hover {
     background-color:${colors.highlight1};
     text-decoration:white wavy underline;
+     min-height:100%;
+  
   }
 
   .nav-link {
@@ -44,6 +63,7 @@ export const StyledNavbar = styled.div`
     font-size:20px;
     font-family: MyFont, serif;
     cursor: pointer;
+    color:black;
   }
 
   .settings {
@@ -84,6 +104,7 @@ export const StyledNavbar = styled.div`
 
   .signLink {
     margin-left:auto;
+    margin-right:20px;
     div  {
       display:inline-block;
       height:100%;
@@ -106,47 +127,7 @@ export const StyledNavbar = styled.div`
   button:hover {
     background-color:${colors.highlight3};
   }
-
-  @media screen and (max-width: 480px) {
-    max-width: 100%;
-    width: 100%;
-    display:block;
-    
-
-
-    .nav-header {
-      margin:0;
-      font-size:30px;
-      padding-top:15px;
-      font-family: MyFont, serif;
-      font-weight:bold;
-      text-align:center;
-    }
-
-
-    .search {
-      padding:0;
-    }
-
-    .nav-link {
-      margin:0;
-      padding:0;
-      font-size:15px;
-      font-family: MyFont, serif;
-      cursor: pointer;
-    }
-    
-    .search {
-      margin-top:15px;
-    }
-
-    .settings {
-      padding:0;
-    }
-
-
-
-  }
+  
 
 `;
 
@@ -156,6 +137,11 @@ export const HomeStyles = createGlobalStyle`
   overflow-x:hidden;
   font-family:MyFont, sans-serif;
   }
+  button {
+    background-color: ${colors.highlight1};
+  }
+  
+
   
 `;
 
@@ -243,15 +229,22 @@ export const StyledNavbarComponent = ({user, currentPage, search, setSearch, han
     }
 
     return (
-        <StyledNavbar  sticky="top">
-            {!currentPage.includes("Creator") ?
-                <div className="nav-header">{`${user.username}'s ${currentPage}`}</div>
-                :
-                <div className="nav-header">{currentPage}</div>}
-            <div className={currentPage.includes("Closet")  ? "nav-link active" : "nav-link"} onClick={handleClosetLink}>Closet</div>
-            <div className={currentPage.includes("Outfits")  ? "nav-link active" : "nav-link"} onClick={handleOutfitLink}>Outfits</div>
-            <div className={currentPage.includes("Creator")  ? "nav-link active" : "nav-link"} onClick={handleOutfitCreatorLink}>Outfit Creator Tool</div>
-            <div className="nav-link search">         <StyledSearchBar><Form className="d-flex">
+        <StyledNavbar  collapseOnSelect expand="lg" className="bg-body-tertiary">
+                    <Navbar.Brand href="#home"> {!currentPage.includes("Creator") ?
+                        <div className="nav-header">{`${user.username}'s ${currentPage}`}</div>
+                        :
+                        <div className="nav-header">{currentPage}</div>}</Navbar.Brand>
+                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                    <Navbar.Collapse id="responsive-navbar-nav">
+
+                        <Nav className="me-auto">
+            <Nav.Link className={currentPage.includes("Closet")  ? "nav-link active" : "nav-link"} onClick={handleClosetLink}>Closet</Nav.Link>
+            <Nav.Link className={currentPage.includes("Outfits")  ? "nav-link active" : "nav-link"} onClick={handleOutfitLink}>Outfits</Nav.Link>
+            <Nav.Link className={currentPage.includes("Creator")  ? "nav-link active" : "nav-link"} onClick={handleOutfitCreatorLink}>Outfit Creator Tool</Nav.Link>
+            <Nav.Link className="nav-link search">
+            </Nav.Link>
+                        </Nav>
+                            <StyledSearchBar><Form className="d-flex">
                 <Form.Control
                     type="search"
                     placeholder="Find my favorite item"
@@ -261,16 +254,36 @@ export const StyledNavbarComponent = ({user, currentPage, search, setSearch, han
                     onChange={(e) => setSearch(e.target.value)}
                 />
                 <Button variant="outline-success"  onClick={handleSearch}>Search</Button>
-            </Form></StyledSearchBar> </div>
-            <div className="nav-link settings right" onClick={openModalAdd}><SettingFilled /></div>
+            </Form></StyledSearchBar>
+            <Nav>
+                <Nav.Link>
+                    <div className="nav-link settings right" onClick={openModalAdd}><SettingFilled /></div>
 
-            <UserSettings
+                    <UserSettings
                 closeModalUpdate={closeModalAdd}
                 isOpenUpdate={state}
                 user={user}
             />
+                </Nav.Link>
+            </Nav>
+                </Navbar.Collapse>
 
 
         </StyledNavbar>
     )
 }
+
+export const Footer = styled(Container)`
+  position: relative;
+  bottom: 0;
+  background-color: white;
+  min-width: 100%;
+  height: 2.5rem;
+  border-top: 1px #c5c2c2 solid;
+  display: block;
+  text-align:center;
+  p {
+    font-family: sans-serif;
+  }
+  padding:10px 0;
+`;

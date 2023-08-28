@@ -1,27 +1,28 @@
-import React, {useState} from 'react';
+import React, { useState} from 'react';
 import {useDispatch} from 'react-redux';
 
 import {Button, Form} from 'react-bootstrap';
-import {addOutfit} from "../../middleware/OutfitActions";
+import { updateOutfit} from "../../middleware/OutfitActions";
 
+const selectOutfits = state => state.outfits;
 
 export default function UpdateOutfit(props) {
+
+    const dispatch = useDispatch();
     const outfit = props.outfit;
     const [cname, setName] = useState(outfit.name);
     const [date, setWorn] = useState(outfit.worn);
     const [about, setAbout] = useState(outfit.about);
-    const [items, setItems] = useState(outfit.items_id);
-    const dispatch = useDispatch();
+    const [items, setItems] = useState(outfit.items);
 
-
-    const onUpdateClick = async ()  => {
+        const onUpdateClick = async ()  => {
         const data = {
             "about":  about,
             "name": cname,
             "worn": date,
             "items_id": items,
         }
-        dispatch(addOutfit(data));
+        dispatch(updateOutfit(outfit.id, data));
 
     };
 

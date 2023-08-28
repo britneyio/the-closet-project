@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./components/Home";
+import Home from "./components/homepage/Home";
 import Closet from "./components/closet/Closet";
 import Outfits from "./components/outfits/Outfits";
 import { ToastContainer } from "react-toastify";
@@ -36,7 +36,7 @@ class App extends Component {
             } />
             <Route  path="/outfit-creator/:id/edit" element={
               <AuthenticationComponent>
-                <UpdateOutfit />
+                <OutfitCreator />
               </AuthenticationComponent>
             } />
             <Route path="*" element={<NotFound/>} />

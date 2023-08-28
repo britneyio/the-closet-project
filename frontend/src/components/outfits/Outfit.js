@@ -8,13 +8,45 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import UpdateOutfit from "./UpdateOutfit";
 import {useNavigate} from "react-router";
+import colors from "../../common/colors";
 
 const StyledCard = styled(Card)`
+  margin:10px;
+  border-radius: 2px;
  & .card-img-top {
     width: 100%;
     height: 15vw;
     object-fit: cover;
 }
+.card-title {
+    font-family: MyFont;
+}
+  button {
+    background-color: ${colors.highlight1};
+    border:none;
+  }
+  
+    button:focus {
+    background-color: ${colors.highlight3};
+  }
+  
+  button:hover {
+    background-color: ${colors.highlight5};
+  }
+  
+  button:active {
+    background-color: ${colors.highlight3};
+  }
+  
+  .btn-primary:active {
+    background-color: ${colors.highlight5};
+
+  }
+  
+  .btn:active {
+    background-color: ${colors.highlight5};
+
+  }
 `;
 
 
@@ -103,7 +135,7 @@ export default function Outfit(props) {
       </ListGroup>
                        
                       
-                <Button size="sm" onClick={() => navigate(`outfit-creator/${outfit.id}/edit`)} style={{color:'black'}}>Edit</Button>
+                <Button size="sm" onClick={() => navigate(`/outfit-creator/${outfit.id}/edit`)} style={{color:'black'}}>Edit</Button>
 
                 
                 </Card.Body>

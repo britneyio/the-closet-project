@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { toastOnError } from '../utils/Utils';
-import { GET_OUTFITS, ADD_OUTFIT, DELETE_OUTFIT, UPDATE_OUTFIT } from '../store/types';
+import { GET_OUTFITS, ADD_OUTFIT, DELETE_OUTFIT, UPDATE_OUTFIT, GET_OUTFIT_BY_ID } from '../store/types';
 
 // returns list of clothing
 export const getOutfits = () => dispatch => {
@@ -16,15 +16,22 @@ export const getOutfits = () => dispatch => {
     });
 };
 
-// adds an item to the list of clothing
-const config = {
-    headers: {
-        "Content-Type": "multipart/form-data",
-    },
+export const getOutfitByID = (id) => dispatch => {
+    axios.get(`/api/v1/outfit/${id}/`)
+        .then(response => {
+            dispatch({
+                type: GET_OUTFIT_BY_ID,
+                payload: response.data
+            });
+
+        }).catch(error => {
+        toastOnError(error);
+    });
 };
 
+
+
 export const addOutfit = item => dispatch => {
-    console.log(item)
     axios.post('/api/v1/outfit/', item)
     .then(response => {
         dispatch({
@@ -33,7 +40,6 @@ export const addOutfit = item => dispatch => {
         });
     }).catch(error => {
         toastOnError(error);
-        console.log(error);
     });
 };
 

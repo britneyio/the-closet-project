@@ -3,9 +3,11 @@ import React, { useState } from 'react';
 import { Card, Button, ListGroup } from 'react-bootstrap';
 import UpdateModal from './UpdateModal';
 import styled from 'styled-components';
+import colors from "../../common/colors";
 
 const StyledCard = styled(Card)`
- box-shadow: -3px 3px 5px gray;
+  margin:10px;
+  border-radius: 2px;
  & .card-img-top {
     width: 100%;
     height: 15vw;
@@ -14,6 +16,32 @@ const StyledCard = styled(Card)`
 .card-title {
     font-family: MyFont;
 }
+  button {
+    background-color: ${colors.highlight1};
+    border:none;
+  }
+  
+    button:focus {
+    background-color: ${colors.highlight3};
+  }
+  
+  button:hover {
+    background-color: ${colors.highlight5};
+  }
+  
+  button:active {
+    background-color: ${colors.highlight3};
+  }
+  
+  .btn-primary:active {
+    background-color: ${colors.highlight5};
+
+  }
+  
+  .btn:active {
+    background-color: ${colors.highlight5};
+
+  }
 `;
 
 export default function Item(props) {

@@ -11,6 +11,7 @@ export const UPDATE_ITEM = 'UPDATE_ITEM';
 
 /** Clothing Type types **/
 export const GET_TYPES = "GET_TYPES";
+
 export const ADD_TYPE = "ADD_TYPE";
 export const DELETE_TYPE = 'DELETE_TYPE';
 export const UPDATE_TYPE = 'UPDATE_TYPE';
@@ -20,6 +21,7 @@ export const GET_OUTFITS = "GET_OUTFITS";
 export const ADD_OUTFIT = "ADD_OUTFIT";
 export const DELETE_OUTFIT = 'DELETE_OUTFIT';
 export const UPDATE_OUTFIT = 'UPDATE_OUTFIT';
+export const GET_OUTFIT_BY_ID = "GET_OUTFIT_BY_ID";
 
 /** Sign in types **/
 export const SET_TOKEN = "SET_TOKEN";

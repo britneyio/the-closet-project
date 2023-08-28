@@ -5,18 +5,18 @@ import styled from "styled-components";
 import colors from "../../common/colors";
 
 const MyNavButtons = styled.div`
-    height:50px;
-    width: 100%;
+    min-width: 100%;
     background-color:${colors.highlight1};
     color:black;
     text-align:center;
-    padding-top:10px;
     font-family: MyFont;
     position:relative;
     border-bottom: 1px solid white;
-    &:hover {
+    height: 40px;
+    :hover, .nav-link:hover {
       background-color:${colors.highlight3};
     }
+
 `;
 
 export default function Type(props)  {

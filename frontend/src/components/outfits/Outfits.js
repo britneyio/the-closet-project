@@ -1,18 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Form, Navbar, Nav, Pagination, Button } from "react-bootstrap";
-import { connect, useDispatch, useSelector} from 'react-redux';
-import ClothingList from "../clothing/ClothingList";
+import { useDispatch, useSelector} from 'react-redux';
 import AddClothingItem from "../clothing/AddClothingItem";
-import withRouter from "../../withRouter";
 import TypeList from "../types/TypeList";
 import { getTypes } from "../../middleware/TypeActions";
-import {SettingFilled} from '@ant-design/icons';
 import {
-    StyledModal,
-    StyledPagination,
-    StyledNavbar,
-    StyledSearchBar,
-    FlexWrapper,
+    FlexWrapper, Footer,
     HomeStyles,
     PageContainer,
     StyledNavbarComponent
@@ -20,6 +12,8 @@ import {
 import { useNavigate } from "react-router";
 import { getOutfits } from "../../middleware/OutfitActions";
 import OutfitList from "./OutfitList";
+import {Col, Row} from "react-bootstrap";
+import ClothingList from "../clothing/ClothingList";
 
 const selectTypes = state => state.types;
 const selectAuth = state => state.auth;
@@ -80,41 +74,25 @@ const handleAddOutfit = () => {
 }
 
     return (
-      <FlexWrapper>
-         <HomeStyles />
-         <PageContainer>
-             <StyledNavbarComponent user={user} currentPage={"Outfits"} search={search} setSearch={setSearch} handleSearch={handleSearch}/>
+        <>
+            <HomeStyles />
+            <StyledNavbarComponent user={user} currentPage={"Outfits"} search={search} setSearch={setSearch} handleSearch={handleSearch}/>
+
+            <Row>
+                <Col lg={2} md={2}>
+                    <TypeList types={types} isClicked={typeIsClicked}/>
+                </Col>
+
+                <Col lg={10} md={10}>
+                    <OutfitList outfits={fit.length > 0 ? fit : outfits} />
+                </Col>
+            </Row>
+            <Footer>
+                <p>© 2023 The Closet Project, Inc. · <a href={'#'}> Privacy</a> · <a href={'#'}>Terms</a></p>
+            </Footer>
+        </>
 
 
-
-             {state ?
-            <AddClothingItem
-                closeModalAdd={closeModalAdd}
-                isOpenAdd={state}
-                types={types}
-                /> : null }
-             <TypeList types={types} isClicked={typeIsClicked} navState={navState} setNavState={setNavState}/>
-
-             <OutfitList outfits={fit.length > 0 ? fit : outfits} />
-          </PageContainer>
-{/*<StyledPagination>*/}
-{/*          <Pagination size="sm">*/}
-{/*      <Pagination.First />*/}
-{/*      <Pagination.Prev />*/}
-{/*      <Pagination.Item active>{1}</Pagination.Item>*/}
-{/*      <Pagination.Ellipsis />*/}
-
-{/*      <Pagination.Item>{3}</Pagination.Item>*/}
-{/*  */}
-
-{/*      <Pagination.Ellipsis />*/}
-{/*      <Pagination.Item>{5}</Pagination.Item>*/}
-{/*      <Pagination.Next />*/}
-{/*      <Pagination.Last />*/}
-{/*    </Pagination> */}
-{/*    </StyledPagination>*/}
-          
-      </FlexWrapper>
     );
   }
 

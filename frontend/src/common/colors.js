@@ -8,7 +8,9 @@ const colors = {
     highlight1: "#E5C2C0",
     highlight2: "#A7D49B",
     highlight3:"#C05746",
-    navtext:"#7293A0"
+    navtext:"#7293A0",
+    highlight4: "#f5e6e6",
+    highlight5:'#933c2a',
 }
 
 export default colors;

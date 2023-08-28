@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import colors from '../../common/colors';
 import AddClothingItem from "../clothing/AddClothingItem";
 import AddType from "./AddType";
+import {Button, Container, Nav, Navbar} from "react-bootstrap";
 
 
 
@@ -81,17 +82,41 @@ const MyNavButtons = styled.div`
     color:black;
     text-align:center;
     padding-top:10px;
-    font-family: MyFont;
+    font-family: MyFont, sans-serif;
     position:relative;
     border-bottom: 1px solid white;
-    &:hover {
+    div:hover, a:hover {
       background-color:${colors.highlight3};
     }
+    .nav-link {
+      color:black;
+    }
+`;
 
-  @media screen and (max-width: 480px) {
-  
+const TypeNav = styled(Container)`
+  //display:inline-block;
+  background-color: ${colors.highlight1};
+  width:100%;
+  & .nav-link {
+    padding:0;
+  }
+  min-height: 100%;
+  height: 100vh;
+  .nav-link {
+    background-color: ${colors.highlight1};
 
   }
+  .nav-link:hover {
+    background-color:${colors.highlight3};
+  }
+  overflow: scroll;
+  //& .col-lg-2, .col-md-2 {
+  //  display: inline !important;
+  //}
+`;
+
+const Bar = styled(Navbar)`
+  background-color: ${colors.highlight1};
 `;
 
 export default function TypeList(props) {
@@ -104,40 +129,56 @@ export default function TypeList(props) {
             return <h2>Please add your first type</h2>;
         }
         let typeList = props.types.map(t =>
-                <Type  className={"types"} key={t.id} type={t} isClicked={props.isClicked}  />);
+               <MyNavButtons key={t.id}> <Type  className={"types"}  type={t} isClicked={props.isClicked}  /></MyNavButtons>);
 
         return (
 <>
-
-      {props.navState ? <MyNavContainer>
-      <MyNav>
+    <TypeNav>
         <MyNavHeader>
-          <div>
-          Clothing Types
-          </div>
-            <button onClick={openModalAdd}>
-                Add type
-            </button>
-            <AddType
-                closeModalAdd={closeModalAdd}
-                isOpenAdd={state}
-            />
-          <div>
-        <img onClick={() => props.setNavState(false)}src="https://img.icons8.com/external-jumpicon-glyph-ayub-irawan/32/null/external-hamburger-basic-ui-jumpicon-glyph-jumpicon-glyph-ayub-irawan-2.png"/>
-        </div>
-          </MyNavHeader>
-      <MyNavButtons key={"all"} onClick={() => props.isClicked("all")}> 
-                All</MyNavButtons>
-            {typeList}
+            Clothing Types
+            <Button onClick={openModalAdd}>+</Button>
+        </MyNavHeader>
 
-      </MyNav>
-      </MyNavContainer>
+              <AddType
+                  closeModalAdd={closeModalAdd}
+                  isOpenAdd={state}
+              />
+        {/*<Bar>*/}
+    {/*<Navbar.Brand href="#home">Clothing types</Navbar.Brand>*/}
+    {/*<Navbar.Toggle aria-controls="responsive-navbar-nav" />*/}
+    {/*<Navbar.Collapse id="responsive-navbar-nav" style={{backgroundColor:'white'}}>*/}
+     <Nav defaultActiveKey="/home" className="flex-column">
+         <Nav.Link>  <MyNavButtons key={"all"} onClick={() => props.isClicked("all")}>
+             All</MyNavButtons></Nav.Link>
+         {typeList}
+     </Nav>
+    {/*</Navbar.Collapse>*/}
+    {/*    </Bar>*/}
 
-      : <ClosedNav>
-                  <div id={"threelines"}>
-        <img onClick={() => props.setNavState(true)}src="https://img.icons8.com/external-jumpicon-glyph-ayub-irawan/32/null/external-hamburger-basic-ui-jumpicon-glyph-jumpicon-glyph-ayub-irawan-2.png"/>
-        </div>
-      </ClosedNav> }
+    </TypeNav>
+
+
+        {/*{props.navState ? <MyNavContainer>*/}
+      {/*<MyNav>*/}
+      {/*  <MyNavHeader>*/}
+
+
+      {/*    <div>*/}
+      {/*  <img onClick={() => props.setNavState(false)}src="https://img.icons8.com/external-jumpicon-glyph-ayub-irawan/32/null/external-hamburger-basic-ui-jumpicon-glyph-jumpicon-glyph-ayub-irawan-2.png"/>*/}
+      {/*  </div>*/}
+      {/*    </MyNavHeader>*/}
+      {/*<MyNavButtons key={"all"} onClick={() => props.isClicked("all")}> */}
+      {/*          All</MyNavButtons>*/}
+      {/*      {typeList}*/}
+
+      {/*</MyNav>*/}
+      {/*</MyNavContainer>*/}
+
+      {/*: <ClosedNav>*/}
+      {/*            <div id={"threelines"}>*/}
+      {/*  <img onClick={() => props.setNavState(true)}src="https://img.icons8.com/external-jumpicon-glyph-ayub-irawan/32/null/external-hamburger-basic-ui-jumpicon-glyph-jumpicon-glyph-ayub-irawan-2.png"/>*/}
+      {/*  </div>*/}
+      {/*</ClosedNav> }*/}
      
         
           </>

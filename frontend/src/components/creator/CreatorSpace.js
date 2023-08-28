@@ -17,6 +17,7 @@ const StyledSpace = styled.div`
 `;
 
 export default function CreatorSpace(props) {
+    console.log(props.items)
     if (props.items.length === 0) {
         return <StyledSpace><h2>Please add your first item</h2> </StyledSpace>;
     }

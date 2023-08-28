@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {Button } from "react-bootstrap";
+import {Button, Col, Container, Row} from "react-bootstrap";
 import { useDispatch, useSelector} from 'react-redux';
 import { signout } from '../../middleware/SigninActions';
 import ClothingList from "../clothing/ClothingList";
@@ -8,10 +8,17 @@ import TypeList from "../types/TypeList";
 import { getTypes } from "../../middleware/TypeActions";
 import { getClothing } from '../../middleware/ClothingActions';
 import './closet.css';
-import {StyledNavbarComponent, FlexWrapper, HomeStyles, PageContainer} from '../../common/inputs';
+import {StyledNavbarComponent, FlexWrapper, HomeStyles, PageContainer, Footer} from '../../common/inputs';
 import colors from "../../common/colors";
-import { useNavigate } from "react-router";
-const selectClothing = state => state.clothing; 
+import styled from "styled-components";
+
+const ClosetContainer = styled(Container)`
+    position:relative;
+    display: inline-block;
+
+  
+`;
+const selectClothing = state => state.clothing;
 const selectTypes = state => state.types;
 const selectAuth = state => state.auth;
 
@@ -60,22 +67,27 @@ const openModalAdd = () => setState(true);
 const closeModalAdd = () => setState(false);
 
     return (
-      <FlexWrapper>
+      <>
          <HomeStyles />
-         <PageContainer> 
     <StyledNavbarComponent user={user} currentPage={"Closet"} search={search} setSearch={setSearch} handleSearch={handleSearch}/>
 
-
-        <TypeList types={types.length > 0 ? types : typesData.types} isClicked={typeIsClicked} navState={navState} setNavState={setNavState}/>
+        <Row>
+            <Col lg={2} md={2}>
+        <TypeList types={types.length > 0 ? types : typesData.types} isClicked={typeIsClicked}/>
+            </Col>
              <AddClothingItem
                  closeModalAdd={closeModalAdd}
                  isOpenAdd={state}
                  types={typesData}
              />
-        <Button style={{margin: "25px 0 0 250px ", backgroundColor:colors.highlight1, border:"none", color:"black"}}onClick={openModalAdd}>Add Item</Button>
-
+        {/*<Button style={{margin: "25px 0 0 250px ", backgroundColor:colors.highlight1, border:"none", color:"black"}}onClick={openModalAdd}>Add Item</Button>*/}
+    <Col lg={10} md={10}>
              <ClothingList clothing={clothing.length > 0 ? clothing : clothingData.clothing } navState={navState}/>
-          </PageContainer>
-      </FlexWrapper>
+    </Col>
+        </Row>
+          <Footer>
+              <p>© 2023 The Closet Project, Inc. · <a href={'#'}> Privacy</a> · <a href={'#'}>Terms</a></p>
+          </Footer>
+      </>
     );
   }
