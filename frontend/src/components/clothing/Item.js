@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import colors from "../../common/colors";
 
 const StyledCard = styled(Card)`
+
   margin:10px;
   border-radius: 2px;
  & .card-img-top {

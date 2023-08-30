@@ -9,7 +9,8 @@ export const clothingReducer = (state = initialState, action) => {
         case GET_CLOTHING:
             return {
                 ...state,
-                clothing: action.payload
+                clothing: action.payload,
+                length: action.length
             };
         case ADD_ITEM:
             return {

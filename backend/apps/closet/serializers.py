@@ -12,13 +12,12 @@ class ClothingTypeSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 class ClothingItemSerializer(serializers.ModelSerializer):
-    cover_file = serializers.ImageField(use_url=True)
+    cover_file = serializers.ImageField()
     ctype =serializers.SlugRelatedField(slug_field='name',queryset=ClothingType.objects.all())
 
-    cover_url = serializers.URLField()
     class Meta:
         model = ClothingItem
-        fields = ('id', 'name', 'worn', 'ctype', 'location', 'cover_file', 'cover_url')
+        fields = ('id', 'name', 'worn', 'ctype', 'location', 'cover_file')
 
 
 

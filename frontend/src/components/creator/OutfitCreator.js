@@ -10,7 +10,7 @@ import {
     PageContainer,
     StyledNavbarComponent
 } from '../../common/inputs';
-import { useParams} from "react-router";
+import {useLocation, useParams} from "react-router";
 import ClothingCarousel from '../carousel/ClothingCarousel';
 import { getClothing } from '../../middleware/ClothingActions';
 import CreatorSpace from "./CreatorSpace";
@@ -30,30 +30,22 @@ const selectClothing = state => state.clothing;
 const selectTypes = state => state.types;
 const selectAuth = state => state.auth;
 
-const selectOutfits = state => state.outfits;
 
 
-export default function OutfitCreator() {
-    const [state, setState] = useState(false);
+export default function OutfitCreator(props) {
     const dispatch = useDispatch();
     const [clothing, setClothing] = useState([]);
     const {types} = useSelector(selectTypes);
     const clothingData = useSelector(selectClothing);
     const [search, setSearch] = useState("");
-    const [isSearching, setSearching] = useState(false);
     const [selected, setSelected] = useState([]);
     const {user}= useSelector(selectAuth);
-    const [navState, setNavState] = useState(true);
-    const { id }  = useParams();
-    const {outfits} = useSelector(selectOutfits);
+    const location = useLocation();
 
 
     useEffect(() => {
         dispatch(getTypes());
         dispatch(getClothing());
-        if (window.location.pathname.includes('edit')) {
-            dispatch(getOutfitByID(id));
-        }
      }, []);
 
 
@@ -89,46 +81,32 @@ export default function OutfitCreator() {
         
       }
 
-    if (window.location.pathname.includes('edit')) {
         return (
             <>
                 <HomeStyles />
                 <StyledNavbarComponent user={user} currentPage={"Outfit Creator Tool"} search={search} setSearch={setSearch} handleSearch={handleSearch}/>
 
                 <Row>
-                    <Col lg={2} md={2}>
+                    <Col lg={2} md={2} xs={12}>
                         <TypeList types={types} isClicked={typeIsClicked}/>
                     </Col>
                     {/*<Button style={{margin: "25px 0 0 250px ", backgroundColor:colors.highlight1, border:"none", color:"black"}}onClick={openModalAdd}>Add Item</Button>*/}
-                    <Col lg={10} md={10}>
+                    <Col lg={4} md={4} xs={12}>
 
+                        <CreatorSpace items={!window.location.pathname.includes('edit') ? selected : location.state.outfits.items} />
+
+                    </Col >
+
+                    <Col lg={3} md={3} xs={12}>
                         <ClothingCarousel clothing={clothing.length > 0 ? clothing : clothingData.clothing } isClicked={imageIsClicked}/>
-                        <UpdateOutfit outfit={outfits}/>
-                        <CreatorSpace items={selected} />
-                    </Col>
-                </Row>
-                <Footer>
-                    <p>© 2023 The Closet Project, Inc. · <a href={'#'}> Privacy</a> · <a href={'#'}>Terms</a></p>
-                </Footer>
-            </>);
 
-    }
-        return (
-            <>
-                <HomeStyles />
-                <StyledNavbarComponent user={user} currentPage={"Outfit Creator Tool"} search={search} setSearch={setSearch} handleSearch={handleSearch}/>
-
-                <Row>
-                    <Col lg={2} md={2}>
-                        <TypeList types={types} isClicked={typeIsClicked}/>
                     </Col>
-                    {/*<Button style={{margin: "25px 0 0 250px ", backgroundColor:colors.highlight1, border:"none", color:"black"}}onClick={openModalAdd}>Add Item</Button>*/}
-                    <Col lg={10} md={10}>
 
-                        <ClothingCarousel clothing={clothing.length > 0 ? clothing : clothingData.clothing } isClicked={imageIsClicked}/>
-                        <AddOutfit items={selected}/>
-                        <CreatorSpace items={selected} />
-                    </Col>
+                    <Col lg={3} md={3} xs={12}>
+                        {!window.location.pathname.includes('edit') ? <AddOutfit items={selected}/> :  <UpdateOutfit outfit={location.state.outfits}/>}
+
+
+                            </Col>
                 </Row>
                 <Footer>
                     <p>© 2023 The Closet Project, Inc. · <a href={'#'}> Privacy</a> · <a href={'#'}>Terms</a></p>

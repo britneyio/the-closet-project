@@ -188,12 +188,15 @@ export default function Home() {
             <SigninModal
                 closeModalIn={closeModalIn}
                 isOpenIn={signInState}
-                /> : null }
+                openSignup={() => {closeModalIn(); openModalUp(); } }
+
+            /> : null }
                
             {signUpState ? 
             <SignupModal
                 closeModalUp={closeModalUp}
                 isOpenUp={signUpState}
+                openSignin={() => {closeModalUp(); openModalIn(); } }
                 /> : null }
                 </div>
 

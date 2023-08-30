@@ -1,115 +1,94 @@
-import React, {Component} from "react";
+import React, {useState} from "react";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import colors from "../../common/colors";
+import { useDispatch} from "react-redux";
 import {
     Button,
     Modal,
     Form,
     FormControl
 } from "react-bootstrap";
-import withRouter from "../../withRouter";
 import { signupUser } from '../../middleware/SignupActions';
-import styled from 'styled-components';
 import {StyledModal} from "../../common/inputs";
 
-class SignupModal extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            username: "",
-            password: "",
-            email: ""
-        };
-    }
-    // sets the state to the target name and value
-    onChange = e => {
-        this.setState({ [e.target.name]: e.target.value });
+export default function SignupModal(props) {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [username, setUsername] = useState('')
+    const dispatch = useDispatch();
+
+    const onSignupClick = () => {
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password)
+        formData.append('username', username)
+        dispatch(signupUser(formData));
     }
 
-    onSignupClick = () => {
-        const userData = {
-            username: this.state.username,
-            password: this.state.password,
-            email: this.state.email
-        };
-        this.props.signupUser(userData);
-    }
-    render() {
         return (
             <StyledModal
-            show={this.props.isOpenUp}
-            onHide={this.props.closeModalUp}>
+                show={props.isOpenUp}
+                onHide={props.closeModalUp}>
                 <Modal.Header closeButton>
                     <Modal.Title>
-                    <h1>Signup</h1>
+                        <h1>Sign up</h1>
                     </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
+                </Modal.Header>
+                <Modal.Body>
                     <Form>
-                    <Form.Group controlId="emailId">
+                        <Form.Group controlId="emailId">
                             <Form.Label>Email</Form.Label>
                             <Form.Control
-                            type="email"
-                            name="email"
-                            placeholder="Enter email"
-                            value={this.email}
-                            onChange={this.onChange}
-                            isInvalid={this.props.createUser.emailError}
+                                type="email"
+                                name="email"
+                                placeholder="Enter email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                isInvalid={email.length < 1}
                             />
-                            <FormControl.Feedback type="invalid">{this.props.createUser.emailError}</FormControl.Feedback>
-                            </Form.Group>
+                            <FormControl.Feedback
+                                type="invalid">
+                                Email required
+                            </FormControl.Feedback>
+                        </Form.Group>
                         <Form.Group controlId="usernameId">
                             <Form.Label>Username </Form.Label>
-                            <Form.Control 
-                            type="text"
-                            name="username"
-                            placeholder="Enter username"
-                            value={this.state.username}
-                            onChange={this.onChange}
-                            isInvalid={this.props.createUser.usernameError}
+                            <Form.Control
+                                type="text"
+                                name="username"
+                                placeholder="Enter username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                isInvalid={username.length < 1}
                             />
 
                             <FormControl.Feedback type="invalid">
-                            {this.props.createUser.usernameError}
-                                </FormControl.Feedback>
+                                Username required
+                            </FormControl.Feedback>
                         </Form.Group>
 
                         <Form.Group controlId="passwordId">
                             <Form.Label>Password</Form.Label>
                             <Form.Control
-                            type="password"
-                            name="password"
-                            placeholder="Enter password"
-                            value={this.password}
-                            onChange={this.onChange}
-                            isInvalid={this.props.createUser.passwordError}
+                                type="password"
+                                name="password"
+                                placeholder="Enter password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                isInvalid={password.length < 8}
                             />
+
                             <FormControl.Feedback type="invalid">
-                           {this.props.createUser.passwordError}
+                                Password of 8 characters required
                             </FormControl.Feedback>
-                            </Form.Group>
+                        </Form.Group>
                     </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
+                </Modal.Body>
+                <Modal.Footer>
                     <Button
-                    onClick={this.onSignupClick}>Sign up</Button>
-                    <p className="mt-2">Already have account? <Link to="/signin">Signin</Link></p>
-                    </Modal.Footer>
-           </StyledModal>
+                        onClick={onSignupClick}>Sign up</Button>
+                    <p className="mt-2">Already have account? <Link onClick={props.openSignin}>Sign in</Link></p>
+                </Modal.Footer>
+            </StyledModal>
         );
-    }
+
 }
-
-SignupModal.propTypes = {
-    signupUser: PropTypes.func.isRequired,
-    createUser: PropTypes.object.isRequired
-}
-
-const mapStateToProps = state => ({
-    createUser: state.createUser
-});
-
-
-export default connect(mapStateToProps, {signupUser})(withRouter(SignupModal));

@@ -1,7 +1,7 @@
 import {GET_OUTFITS, ADD_OUTFIT, DELETE_OUTFIT, UPDATE_OUTFIT, GET_OUTFIT_BY_ID} from "./types";
 
 const initialState = {
-    outfits: []
+    outfits: [],
 };
 
 export const outfitReducer = (state = initialState, action) => {
@@ -9,13 +9,12 @@ export const outfitReducer = (state = initialState, action) => {
         case GET_OUTFITS:
             return {
                 ...state,
-                outfits: action.payload
+                outfits: action.payload,
             };
         case ADD_OUTFIT:
             return {
                 ...state,
-                outfits: [...state.outfits, action.payload]
-        
+                outfits: [...state.outfits, action.payload],
             };
         case DELETE_OUTFIT:
             return {

@@ -3,16 +3,20 @@ import { toastOnError } from '../utils/Utils';
 import { GET_CLOTHING, ADD_ITEM, DELETE_ITEM, UPDATE_ITEM } from '../store/types';
 
 // returns list of clothing
-export const getClothing = () => async dispatch => {
-    axios.get('/api/v1/clothing/')
+export const getClothing = (page_num = 1) => async dispatch => {
+    axios.get(`/api/v1/clothing/?page=${page_num}`)
+
     .then(response => {
-        dispatch({
+        console.log("num", page_num)
+        console.log("r", response.data)
+         dispatch({
             type: GET_CLOTHING,
-            payload: response.data
+            payload: response.data.results,
+            length: response.data.count,
+
         });
 
     }).catch(error => {
-        console.log(error)
         toastOnError(error);
     });
 };

@@ -44,7 +44,6 @@ export const updateUserEmail = (email, password) => dispatch => {
             toast.success("Update Successful.");
         }).catch(error => {
     // show error toast
-        console.log(error)
     toastOnError(error);
 })
 }

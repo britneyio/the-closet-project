@@ -1,14 +1,10 @@
-import React, { Component, useState } from 'react';
+import React from 'react';
 import { Card, Button, ListGroup } from 'react-bootstrap';
-import withRouter from '../../withRouter';
-import {connect, useDispatch} from "react-redux";
 import styled from 'styled-components';
-import { updateOutfit } from '../../middleware/OutfitActions';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import UpdateOutfit from "./UpdateOutfit";
-import {useNavigate} from "react-router";
 import colors from "../../common/colors";
+import {Link} from "react-router-dom";
 
 const StyledCard = styled(Card)`
   margin:10px;
@@ -52,12 +48,11 @@ const StyledCard = styled(Card)`
 
 
 export default function Outfit(props) {
-    const navigate = useNavigate();
-   
+
     const { outfit } = props;
     const images = outfit.items.map(item =>
         <img key={item.id}
-        src={item.cover_file ? item.cover_file : item.cover_url}
+        src={item.cover_file}
         style={{
             display: 'block',
             height: '100%',
@@ -135,7 +130,9 @@ export default function Outfit(props) {
       </ListGroup>
                        
                       
-                <Button size="sm" onClick={() => navigate(`/outfit-creator/${outfit.id}/edit`)} style={{color:'black'}}>Edit</Button>
+               <Link to={`/outfit-creator/${outfit.id}/edit`} state={{
+                   outfits : outfit
+               }}> <Button size="sm" style={{color:'black'}}>Edit</Button></Link>
 
                 
                 </Card.Body>

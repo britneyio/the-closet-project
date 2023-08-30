@@ -8,7 +8,6 @@ import Root from "./Root";
 import axios from "axios";
 import AuthenticationComponent from './utils/RequireAuth';
 import OutfitCreator from './components/creator/OutfitCreator';
-import UpdateOutfit from "./components/outfits/UpdateOutfit";
 axios.defaults.baseURL = "http://127.0.0.1:8000";
 class App extends Component {
   render() {

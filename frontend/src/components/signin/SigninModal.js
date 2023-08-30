@@ -1,43 +1,34 @@
-import React, {Component} from "react";
+import React, {useState} from "react";
 import { Link } from "react-router-dom";
 import {
     Button,
     Modal,
     Form,
 } from "react-bootstrap";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import {useDispatch} from "react-redux";
 import { signin } from "../../middleware/SigninActions";
-import withRouter from "../../withRouter";
 import {StyledModal} from "../../common/inputs";
-class SigninModal extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            email: "",
-            password: "",
-        };
-    }
-    // sets the state to the target name and value
-    onChange = e => {
-        this.setState({ [e.target.name]: e.target.value });
-    }
 
-    onSigninClick = () => {
-        const userData = {
-            email: this.state.email,
-            password: this.state.password,
-        };
-        this.props.signin(userData, "/closet");
+const selectAuth = state => state.auth;
+
+export default function SigninModal(props){
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const dispatch = useDispatch();
+
+    const onSigninClick = () => {
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password)
+        dispatch(signin(formData, "/closet"));
     }
-    render() {
         return (
             <StyledModal
-            show={this.props.isOpenIn}
-            onHide={this.props.closeModalIn}>
+            show={props.isOpenIn}
+            onHide={props.closeModalIn}>
                 <Modal.Header closeButton>
                     <Modal.Title>
-                    <h1>Signin</h1>
+                    <h1>Sign In</h1>
                     </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -48,8 +39,8 @@ class SigninModal extends Component {
                             type="email"
                             name="email"
                             placeholder="Enter email"
-                            value={this.state.email}
-                            onChange={this.onChange}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             />
                             </Form.Group>
 
@@ -59,30 +50,23 @@ class SigninModal extends Component {
                             type="password"
                             name="password"
                             placeholder="Enter password"
-                            value={this.state.password}
-                            onChange={this.onChange}
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
                             />
                             </Form.Group>
                     </Form>
                     </Modal.Body>
                     <Modal.Footer>
                     <Button color="primary" type={"submit"}
-                    onClick={this.onSigninClick}>Sign in</Button>
-                    <p className="mt-2">Don't have an account? <Link to="/signup">Signin</Link></p>
+                    onClick={onSigninClick}>Sign in</Button>
+                    <p className="mt-2">Don't have an account? <Link onClick={props.openSignup}>Sign up</Link></p>
                     </Modal.Footer>
            </StyledModal>
         );
-    }
+
 }
 
-SigninModal.propTypes = {
-    signin: PropTypes.func.isRequired,
-    auth: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({
-    auth: state.auth
-});
 
 
-export default connect(mapStateToProps, {signin}) (withRouter(SigninModal));
+
+

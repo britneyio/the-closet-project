@@ -27,7 +27,7 @@ const Root = ({ children,     preloadedState
   }
 return (
   <Provider store={store}>
-    <ReduxRouter history={history}>{children}</ReduxRouter>
+    <ReduxRouter history={history} >{children}</ReduxRouter>
   </Provider>
 );
 };

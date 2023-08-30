@@ -1,16 +1,19 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
-import {Modal, Navbar, Container, Form, Button, Nav} from 'react-bootstrap';
+import {Modal, Navbar, Container, Form, Button, Nav, Pagination} from 'react-bootstrap';
 import colors from './colors';
-import { ModalHeader } from './fonts';
 import {createGlobalStyle} from 'styled-components';
 import {SettingFilled} from "@ant-design/icons";
 import {useNavigate} from "react-router";
-import AddClothingItem from "../components/clothing/AddClothingItem";
 import UserSettings from "../components/closet/UserSettings";
-import {Link} from "react-router-dom";
+import ReactPaginate from "react-paginate";
+import {getClothing} from "../middleware/ClothingActions";
+import {useDispatch} from "react-redux";
 export const StyledModal = styled(Modal)`
-
+  
+  max-width: 100%;
+  width:75%;
+ 
     justify-content:space-between;
   & button {
     background-color: ${colors.highlight1};
@@ -19,6 +22,7 @@ export const StyledModal = styled(Modal)`
   }
   & button:hover {
     background-color: ${colors.highlight3};
+  }
 
     & button:focus {
       background-color: ${colors.highlight3};
@@ -27,13 +31,15 @@ export const StyledModal = styled(Modal)`
     & button:active {
       background-color: ${colors.highlight3} !important;
     }
-      ${Link} {
-      background-color: ${colors.highlight4};
+    & .modal-footer a {
+      color: ${colors.highlight3} !important;
       }
-    }
+    
 `;
 
 export const StyledNavbar = styled(Navbar)`
+  z-index: 100;
+
   height: 80px;
   width:100%;
   display:flex;
@@ -41,6 +47,9 @@ export const StyledNavbar = styled(Navbar)`
   background-color: white;
   position:sticky;
   box-shadow: 3px 0 5px gray;
+  .show .nav-link {
+    background-color: white;
+  }
   button {
     background-color: ${colors.highlight1};
     border: none;
@@ -134,7 +143,6 @@ export const StyledNavbar = styled(Navbar)`
 export const HomeStyles = createGlobalStyle`
   body {
   background-color:white;
-  overflow-x:hidden;
   font-family:MyFont, sans-serif;
   }
   button {
@@ -145,18 +153,19 @@ export const HomeStyles = createGlobalStyle`
   
 `;
 
-export const StyledPagination = styled.div`
-text-align:center;
-position: absolute;
-bottom: 0;
-width: 100%;
-height: 50px;
-
-& {
-  margin: 0;
-  padding:0;
+function Items({ currentItems }) {
+    return (
+        <Pagination>
+            {
+                currentItems.map((item) => (
+                    <Pagination.Item key={item.name + item.id}>
+                        <h3>Item #{item.name}</h3>
+                    </Pagination.Item>
+                ))}
+        </Pagination>
+    );
 }
-`;
+
 
 export const StyledSearchBar = styled.div`
   display:flex;
@@ -186,31 +195,7 @@ flex-direction:column;
   }
 `;
 
-export const StyledList = styled(Container)`
-    display: flex;
-    flex-direction:row;
-    gap:25px; 
-    position: relative;
-    overflow:hidden;
-    width:100%;
-    flex-wrap:wrap;
-    top:50px;
-    left:150px;
-    padding:20px 45px 45px 45px;
-    .card {
-        width: 300px;
-    }
 
-    .card button {
-        margin: 20px 0;
-        background-color:${colors.highlight1};
-        border: none;
-        margin-right:15px;
-    }
-    .card button:hover {
-        background-color:${colors.highlight3};
-    }
-`;
 
 export const StyledNavbarComponent = ({user, currentPage, search, setSearch, handleSearch}) => {
     const [state, setState] = useState(false);
@@ -250,25 +235,24 @@ export const StyledNavbarComponent = ({user, currentPage, search, setSearch, han
                     placeholder="Find my favorite item"
                     className="me-2"
                     aria-label="Search"
+                    name={"q"}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
-                <Button variant="outline-success"  onClick={handleSearch}>Search</Button>
+                <Button variant="outline-success"  onClick={handleSearch} onSubmit={handleSearch}>Search</Button>
             </Form></StyledSearchBar>
             <Nav>
-                <Nav.Link>
-                    <div className="nav-link settings right" onClick={openModalAdd}><SettingFilled /></div>
-
-                    <UserSettings
-                closeModalUpdate={closeModalAdd}
-                isOpenUpdate={state}
-                user={user}
-            />
+                <Nav.Link className="nav-link" onClick={openModalAdd}>
+                    <SettingFilled />
                 </Nav.Link>
             </Nav>
                 </Navbar.Collapse>
 
-
+            <UserSettings
+                closeModalUpdate={closeModalAdd}
+                isOpenUpdate={state}
+                user={user}
+            />
         </StyledNavbar>
     )
 }

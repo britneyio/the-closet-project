@@ -6,6 +6,7 @@ import { GET_OUTFITS, ADD_OUTFIT, DELETE_OUTFIT, UPDATE_OUTFIT, GET_OUTFIT_BY_ID
 export const getOutfits = () => dispatch => {
     axios.get('/api/v1/outfit/')
     .then(response => {
+        console.log(response.data)
         dispatch({
             type: GET_OUTFITS,
             payload: response.data
@@ -19,9 +20,10 @@ export const getOutfits = () => dispatch => {
 export const getOutfitByID = (id) => dispatch => {
     axios.get(`/api/v1/outfit/${id}/`)
         .then(response => {
+            console.log("actions", response.data)
             dispatch({
                 type: GET_OUTFIT_BY_ID,
-                payload: response.data
+                payload: response.data,
             });
 
         }).catch(error => {

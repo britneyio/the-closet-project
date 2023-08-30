@@ -7,5 +7,7 @@ router = DefaultRouter()
 router.register('clothing', ClothingItemViewSet, basename='clothing')
 router.register('clothingtype', ClothingTypeViewSet, basename='types')
 router.register('outfit', OutfitViewSet, basename='outfit')
+router.register('outfit/<int:pk>/', OutfitViewSet, basename='outfit')
+
 
 clothing_urlpatterns = [path(r'api/v1/', include(router.urls))]

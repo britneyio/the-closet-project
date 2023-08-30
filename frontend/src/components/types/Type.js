@@ -32,7 +32,7 @@ export default function Type(props)  {
                         {/*<img width="15px" src="https://img.icons8.com/ios-glyphs/30/null/menu-2.png"/>*/}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                        <Dropdown.Item onClick={(e) => { setState(true); }}>
+                        <Dropdown.Item onClick={(e) => { setState(true); }} >
                             Edit
                         </Dropdown.Item>
                     </Dropdown.Menu>

@@ -2,8 +2,9 @@ import React, {useState} from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import {StyledModal} from "../../common/inputs";
 import {useDispatch} from "react-redux";
-import {updateUserEmail, updateUsername, updateUserPassword} from "../../middleware/UserActions";
+import {updateUsername, updateUserPassword} from "../../middleware/UserActions";
 import styled from "styled-components";
+import {signout} from "../../middleware/SigninActions";
 
 const DeleteButton = styled.button`
   background-color: white !important;
@@ -20,6 +21,7 @@ export default function UserSettings(props) {
     const [previousPass, setPreviousPass] = useState("");
     const [showDelete, setShowDelete] = useState(false);
     const [deletePass, setDeletePass] = useState("");
+    const [imageUpload, setImageUpload] = useState(null);
     const dispatch = useDispatch();
     // console.log(user)
     const onDeleteClick = () => {
@@ -30,6 +32,10 @@ export default function UserSettings(props) {
         // dispatch(deleteUser(user.id));
 
     }
+
+    const onSignout = () => {
+        dispatch(signout());
+    };
 
    const updateName = ()  =>  dispatch(updateUsername(username));
    // const updateEmail = () => dispatch(updateUserEmail(email, emailPass));
@@ -115,6 +121,17 @@ onHide={props.closeModalUpdate}>
 
             <Button  color="primary"
                      onClick={() => updatePassword()}>Update</Button>
+            <Form.Group controlId="imageId">
+                <Form.Label>Creator Space Background Image: </Form.Label>
+                <Form.Control
+                    type="file"
+                    name="cover"
+                    onChange={(e) => setImageUpload(e.target.files[0])}
+                    accept="image/*"
+                />
+            </Form.Group>
+            <Button  color="primary"
+                     onClick={() => {}}>Save</Button>
         </Form>
 
         <hr/>
@@ -134,6 +151,7 @@ onHide={props.closeModalUpdate}>
                 />
             </Form.Group>
             <br/>
+            <DeleteButton onClick={onSignout}>Log out</DeleteButton>
             <DeleteButton  color="dark"
                            onClick={() => submitDelete()}>Delete Account</DeleteButton>
             <Button onClick={() => setShowDelete(false)}>I want to keep my account</Button>

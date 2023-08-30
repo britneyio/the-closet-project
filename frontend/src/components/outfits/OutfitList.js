@@ -4,6 +4,7 @@ import {Col, Container, Row} from "react-bootstrap";
 
 
 export default function OutfitList(props) {
+
         if (props.outfits.length === 0) {
             return <h2>Please add your first item</h2>;
         }

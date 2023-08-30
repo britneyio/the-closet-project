@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import styled from 'styled-components';
@@ -25,8 +25,9 @@ const responsive = {
     height:200px;
     width: 200px;
     text-align:center;
+    
     img {
-      margin: 10px 20px;
+      margin: 0 auto;
       box-shadow: 1px 1px 2px gray;
     }
     h3 {
@@ -35,18 +36,15 @@ const responsive = {
   `;
 const StyledCarousel = styled.div`
     & .clothing-item {
-      width:200px !important;
+      width:100px !important;
     }
     border: 5px solid ${colors.highlight1};
-    width:75%;
-    height:250px;
-    margin-left: 300px;
-    margin-top: 10px;
-    margin-bottom:10px;
-    box-shadow: 3px 3px 5px gray;
-  
+    width:100%;
+    height:50%;
+    border: 1px solid gray;  
     background-color: ${colors.highlight1};
-
+  overflow: scroll;
+      text-align: center;
     img {
       border: 1px solid white;
 
@@ -93,31 +91,35 @@ export default function ClothingCarousel(props) {
 
 
     return(
-
+<>
+    <StyledCarousel>
+        {items}
+    </StyledCarousel>
+    </>
       
-         <StyledCarousel>
-           <h3>Add item</h3>
-        <Carousel
-  swipeable={true}
-  draggable={true}
-  showDots={true}
-  responsive={responsive}
-  ssr={true}
-  infinite={false}
-  autoPlay={false}
-  autoPlaySpeed={1000}
-  keyBoardControl={true}
-  customTransition="all .5"
-  transitionDuration={500}
-  containerClass="carousel-container"
-  removeArrowOnDeviceType={["tablet", "mobile"]}
-  deviceType={props.deviceType}
-  dotListClass="custom-dot-list-style"
-  renderButtonGroupOutside
-  itemClass="clothing-item"
->
-    {items}
-</Carousel>
-</StyledCarousel> 
+//          <StyledCarousel>
+//            <h3>Add item</h3>
+//         <Carousel
+//   swipeable={true}
+//   draggable={true}
+//   showDots={true}
+//   responsive={responsive}
+//   ssr={true}
+//   infinite={false}
+//   autoPlay={false}
+//   autoPlaySpeed={1000}
+//   keyBoardControl={true}
+//   customTransition="all .5"
+//   transitionDuration={500}
+//   containerClass="carousel-container"
+//   removeArrowOnDeviceType={["tablet", "mobile"]}
+//   deviceType={props.deviceType}
+//   dotListClass="custom-dot-list-style"
+//   renderButtonGroupOutside
+//   itemClass="clothing-item"
+// >
+//     {items}
+// </Carousel>
+// </StyledCarousel>
     );
 }
