@@ -36,7 +36,8 @@ if not IS_HEROKU_APP:
 
 
 if IS_HEROKU_APP:
-    ALLOWED_HOSTS = ["https://the-closet-capsule-1cf6a6c80544.herokuapp.com, https://closet-capsule-frontend-9ae63ded6df2.herokuapp.com"]
+    ALLOWED_HOSTS = ['*']
+    # ALLOWED_HOSTS = ["https://the-closet-capsule-1cf6a6c80544.herokuapp.com, https://closet-capsule-frontend-9ae63ded6df2.herokuapp.com"]
 else:
     ALLOWED_HOSTS = [".localhost", "127.0.0.1", "[::1]", "0.0.0.0"]
 
