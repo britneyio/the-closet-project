@@ -108,6 +108,11 @@ CORS_ALLOWED_ORIGINS = [
     "https://the-closet-capsule-1cf6a6c80544.herokuapp.com"
 ] 
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://closet-capsule-frontend-9ae63ded6df2.herokuapp.com",
+    "https://the-closet-capsule-1cf6a6c80544.herokuapp.com"
+]
+
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
