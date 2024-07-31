@@ -8,7 +8,7 @@ import Root from "./Root";
 import axios from "axios";
 import AuthenticationComponent from './utils/RequireAuth';
 import OutfitCreator from './components/creator/OutfitCreator';
-axios.defaults.baseURL = "http://127.0.0.1:8000";
+axios.defaults.baseURL = "https://the-closet-capsule-1cf6a6c80544.herokuapp.com";
 class App extends Component {
   render() {
     return (
