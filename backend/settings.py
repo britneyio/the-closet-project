@@ -103,7 +103,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost",
     "http://127.0.0.1:3001",
     "http://localhost:3001",
-    "https://closet-capsule-frontend-9ae63ded6df2.herokuapp.com"
+    "https://closet-capsule-frontend-9ae63ded6df2.herokuapp.com",
+    "https://the-closet-capsule-1cf6a6c80544.herokuapp.com"
 ] 
 
 ROOT_URLCONF = 'backend.urls'
