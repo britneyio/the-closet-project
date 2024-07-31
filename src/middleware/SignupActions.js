@@ -8,8 +8,12 @@ import {
 
   export const signupUser = userData => dispatch => {
       dispatch({ type: CREATE_USER_SUBMITTED});
-      axios.post("/api/v1/users/", userData)
-      .then(response => {
+      axios.post(`/api/v1/users/`, userData, {
+        headers: {
+          'Content-Type': 'application/json',
+        //   'X-CSRFToken': getCookie('csrftoken')  // Include CSRF token if needed
+        }
+      }).then(response => {
           toast.success("Account for " +
           userData.username + 
           " created sucessfully. Please login.");
