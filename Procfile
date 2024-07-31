@@ -1,2 +1,1 @@
-web: gunicorn apps.closet:app
-web: gunicorn apps.accounts:app
+web: gunicorn backend.wsgi
