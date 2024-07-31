@@ -75,14 +75,14 @@ REST_FRAMEWORK = {
 DJOSER = {
     "USER_ID_FIELD": "username",
     "LOGIN_FIELD": "email",
-    "SEND_ACTIVATION_EMAIL": True,
-    "ACTIVATION_URL": "activate/{uid}/{token}",
+    # "SEND_ACTIVATION_EMAIL": True,
+    # "ACTIVATION_URL": "activate/{uid}/{token}",
     'SERIALIZERS': {
         'token_create': 'apps.accounts.serializers.CustomTokenCreateSerializer',
     },
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SITE_NAME = "The Closet Project"
 
 MIDDLEWARE = [
