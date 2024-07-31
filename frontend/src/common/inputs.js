@@ -6,11 +6,9 @@ import {createGlobalStyle} from 'styled-components';
 import {SettingFilled} from "@ant-design/icons";
 import {useNavigate} from "react-router";
 import UserSettings from "../components/closet/UserSettings";
-import ReactPaginate from "react-paginate";
-import {getClothing} from "../middleware/ClothingActions";
-import {useDispatch} from "react-redux";
+
 export const StyledModal = styled(Modal)`
-  
+  z-index: 10000;
   max-width: 100%;
   width:75%;
  
@@ -67,7 +65,7 @@ export const StyledNavbar = styled(Navbar)`
   }
 
   .nav-link {
-    margin:0;
+    margin:0 10px;
     padding:23px;
     font-size:20px;
     font-family: MyFont, serif;

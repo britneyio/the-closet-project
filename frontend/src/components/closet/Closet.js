@@ -1,65 +1,56 @@
 import React, { useState, useEffect } from "react";
-import {Button, Col, Container, Row} from "react-bootstrap";
+import {Button, Col, Row} from "react-bootstrap";
 import { useDispatch, useSelector} from 'react-redux';
-import { signout } from '../../middleware/SigninActions';
 import ClothingList from "../clothing/ClothingList";
-import AddClothingItem from "../clothing/AddClothingItem";
 import TypeList from "../types/TypeList";
 import { getTypes } from "../../middleware/TypeActions";
 import { getClothing } from '../../middleware/ClothingActions';
 import './closet.css';
 import {
     StyledNavbarComponent,
-    FlexWrapper,
     HomeStyles,
-    PageContainer,
     Footer,
-    StyledPagination
 } from '../../common/inputs';
 import colors from "../../common/colors";
 import styled from "styled-components";
-import ReactPaginate from "react-paginate";
 
 const FooterRow = styled(Row)`
-  .container {
-    display: flex;
-    list-style: none;
+  ul {
+    list-style:none;
   }
-
-  .page {
-    padding: 10px;
-    border: 1px solid #dcdcdc;
-    border-radius: 6px;
-    margin-right: 10px;
-    cursor: pointer;
-  }
-
-  .disabled {
-    cursor: not-allowed;
+  
+  li {
+    display:inline;
 
   }
+  
+  button, .btn, .btn-primary {
+    border:none !important;
+    text-decoration: none;
+    background-color: ${colors.highlight1};
+    }
 
-  .active {
-    border: 2px solid #000;
-    font-weight: bold;
-  }
+    button:focus,  .btn-primary:focus, .active:focus, .btn:focus {
+      background-color: ${colors.highlight3};
+    }
+  
 
-  .previous {
-    padding: 10px;
-    border-radius: 6px;
-    margin-right: 10px;
-    cursor: pointer;
-  }
+    button:hover, .btn-primary:hover, .active:hover, .btn:hover{
+      background-color: ${colors.highlight3};
+    }
 
-  .break {
-    padding: 10px;
-  }
+    button:active, .btn-primary:active, .active:active, .btn:active {
+      background-color: ${colors.highlight3};
+    }
 
-  .next {
-    padding: 10px;
-    border-radius: 6px;
-    margin-right: 10px;
-    cursor: pointer;
+ 
+
+   
+
+
+
+
+
   }
 
   
@@ -69,7 +60,6 @@ const selectTypes = state => state.types;
 const selectAuth = state => state.auth;
 
 export default function Closet(props) {
-  const [state, setState] = useState(false);
   const dispatch = useDispatch();
   const [clothing, setClothing] = useState([]);
   const {types} = useSelector(selectTypes);
@@ -77,40 +67,51 @@ export default function Closet(props) {
   const [search, setSearch] = useState("");
   const {user}= useSelector(selectAuth);
   const {length} = useSelector(selectClothing);
-    const [hits, setHits] = useState([]);
-    const [pageCount, setPageCount] = useState(0);
-    const [isLoaded, setisLoaded] = useState(false);
-    const [currentPage, setcurrentPage] = useState(0);
-    const [itemOffset, setItemOffset ] = useState(1);
-    const itemsPerPage = 2;
-    console.log("offset", itemOffset)
-    console.log("pagecount", pageCount)
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+  const totalPages = Math.ceil(length / itemsPerPage);
+  const pages = [];
+  for(let i=1 ; i<=totalPages; i++){
+        pages.push(i);
+    }
+
+
 
     useEffect(() => {
-        init();
+        dispatch(getClothing(currentPage));
+        },
+        [currentPage]);
+
+    useEffect(() => {
+        dispatch(getTypes());
     }, []);
 
-    const init = async () => {
-        handleFetch();
-        dispatch(getTypes());
-
+    const handlePageChange = (i) => {
+        if (currentPage > 1 && i === -1) {
+            setCurrentPage(currentPage - 1)
+        }
+        if (currentPage < totalPages && i === 1){
+            setCurrentPage(currentPage + 1)
+        }
+        else {
+            setCurrentPage(i);
+        }
     }
 
+    const pageNumbers = pages.map(page => {
+            if(page <= 20  && page > 0) {
+                return(
+                    <li><Button key={page}  onClick={() => handlePageChange(page)}
+                        className={currentPage===page ? 'active' : 'btn-primary'}>
+                        {page}</Button>
+                    </li>
+                );
+            }else{
+                return null;
+            }
+        }
 
-    const handleFetch = () => {
-        dispatch(getClothing(itemOffset));
-        setPageCount(Math.ceil(length / itemsPerPage));
-    }
-
-    const handlePageChange = (e) => {
-        const newOffset = (e.selected);
-        handleFetch();
-
-        setItemOffset(newOffset);
-        console.log("Selected", e);
-    };
-
-
+    );
 
 
 
@@ -130,8 +131,7 @@ export default function Closet(props) {
     
   }
 
-const openModalAdd = () => setState(true);
-const closeModalAdd = () => setState(false);
+
 
     return (
       <>
@@ -142,33 +142,18 @@ const closeModalAdd = () => setState(false);
             <Col lg={2} md={2}>
         <TypeList types={types} isClicked={typeIsClicked}/>
             </Col>
-             <AddClothingItem
-                 closeModalAdd={closeModalAdd}
-                 isOpenAdd={state}
-                 types={types}
-             />
-        {/*<Button style={{margin: "25px 0 0 250px ", backgroundColor:colors.highlight1, border:"none", color:"black"}}onClick={openModalAdd}>Add Item</Button>*/}
     <Col lg={10} md={10}>
-             <ClothingList clothing={clothing.length > 0 ? clothing : clothingData.clothing }/>
+             <ClothingList clothing={clothing.length > 0 ? clothing : clothingData.clothing } types={types}/>
     </Col>
         </Row>
           <FooterRow>
-              <ReactPaginate
-                  breakLabel="..."
-                  nextLabel="next >"
-                  onPageChange={handlePageChange}
-                  pageRangeDisplayed={5}
-                  pageCount={3}
-                  previousLabel="< previous"
-                  containerClassName={'container'}
-                  previousLinkClassName={'page'}
-                  breakClassName={'page'}
-                  nextLinkClassName={'page'}
-                  pageClassName={'page'}
-                  disabledClassName={'disabled'}
-                  activeClassName={'active'}
-              />
 
+
+              <div style={{display:'flex', justifyContent:'center'}}>
+              <Button onClick={() => handlePageChange(-1)}>Previous</Button>
+                 <ul> {pageNumbers}</ul>
+              <Button onClick={() => handlePageChange(1)}>Next</Button>
+              </div>
           <Footer>
               <p>© 2023 The Closet Project, Inc. · <a href={'#'}> Privacy</a> · <a href={'#'}>Terms</a></p>
           </Footer>

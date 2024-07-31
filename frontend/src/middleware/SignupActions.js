@@ -14,6 +14,7 @@ import {
           userData.username + 
           " created sucessfully. Please login.");
         dispatch({ type: CREATE_USER_SUCCESS});
+        
       }).catch(error => {
           if(error.response) {
               //response code that isn't 2xx

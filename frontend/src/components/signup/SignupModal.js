@@ -17,10 +17,11 @@ export default function SignupModal(props) {
     const dispatch = useDispatch();
 
     const onSignupClick = () => {
-        const formData = new FormData();
-        formData.append('email', email);
-        formData.append('password', password)
-        formData.append('username', username)
+        const formData = {
+            'email' : email,
+            'password' : password,
+            'username' : username
+        }
         dispatch(signupUser(formData));
     }
 

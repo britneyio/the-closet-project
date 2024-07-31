@@ -3,7 +3,7 @@ import {Button, Container, Row, Col, Image, Navbar, Nav} from "react-bootstrap";
 import SignupModal from "../signup/SignupModal";
 import SigninModal from "../signin/SigninModal";
 import styled from 'styled-components';
-import './home.css';
+
 import colors from '../../common/colors';
 import {HomeStyles, StyledNavbar, PageContainer, Footer} from "../../common/inputs";
 import { useNavigate } from "react-router";
@@ -81,10 +81,6 @@ const PageRow = styled(Row)`
 `;
 
 
-
-const PageWrapper = styled(Container)`
-  padding-bottom: 2.5rem;
-`;
 export default function Home() {
   const [signInState, setSignInModal] = useState(false);
   const [signUpState, setSignUpModal] = useState(false);

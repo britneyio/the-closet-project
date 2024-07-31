@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { useDispatch} from 'react-redux';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { addType } from '../../middleware/TypeActions';
+import {StyledModal} from "../../common/inputs";
 
 export default function AddType(props) {
     const [name, setName] = useState('');
@@ -13,7 +14,7 @@ export default function AddType(props) {
         };
 
         return (
-                            <Modal
+                            <StyledModal
             show={props.isOpenAdd}
             onHide={props.closeModalAdd}>
                 <Modal.Header closeButton>
@@ -35,10 +36,11 @@ export default function AddType(props) {
                             />
                     </Form.Group>          
                 </Form>
-                <Button  color="primary"
+                        <br/>
+                <Button
                     onClick={() => onAddClick()}>Add</Button>
                 </Modal.Body>
-                </Modal>
+                </StyledModal>
         );
     
     }

@@ -6,16 +6,19 @@ import colors from "../../common/colors";
 
 const MyNavButtons = styled.div`
     min-width: 100%;
-    background-color:${colors.highlight1};
-    color:black;
+    background-color:${colors.highlight4};
+    color:black !important;
     text-align:center;
-    font-family: MyFont;
+    font-family: MyFont, sans-serif;
     position:relative;
-    border-bottom: 1px solid white;
     height: 40px;
+  padding:0 55px;
     :hover, .nav-link:hover {
       background-color:${colors.highlight3};
     }
+  .nav-link {
+    color:black !important;
+  }
 
 `;
 
