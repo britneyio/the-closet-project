@@ -1,0 +1,34 @@
+# docker-compose.yml — orchestrates the multi-container local dev stack.
+# `docker compose up` boots BOTH services below on a shared private network.
+
+services:
+  # ─── PostgreSQL with the pgvector extension preinstalled ───────────
+  db:
+    image: pgvector/pgvector:pg16      # official Postgres 16 image + pgvector
+    env_file: .env                     # reads POSTGRES_DB / USER / PASSWORD
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # persist DB across container restarts
+    ports:
+      - "5432:5432"                    # expose to host (handy for a GUI/psql); optional
+    healthcheck:                       # lets `backend` wait until DB is truly ready
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ─── Django backend ───────────────────────────────────────────────
+  backend:
+    build: ./backend                   # build using backend/Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000  # DEV override of the image's gunicorn CMD
+    env_file: .env
+    volumes:
+      - ./backend:/app                 # mount source -> runserver auto-reloads on edits
+    ports:
+      - "8000:8000"                    # host:container -> reach the app at localhost:8000
+    depends_on:
+      db:
+        condition: service_healthy     # don't start until db's healthcheck passes
+
+# ─── Named volume: managed by Docker, survives `down`/`up` ────────────
+volumes:
+  pgdata:

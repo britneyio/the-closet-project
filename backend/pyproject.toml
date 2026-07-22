@@ -1,0 +1,17 @@
+# Central config for Python dev tools (pytest + ruff).
+
+[tool.pytest.ini_options]
+# Tell pytest-django which settings to use and where to find tests.
+DJANGO_SETTINGS_MODULE = "backend.settings"
+python_files = ["test_*.py", "tests.py", "*_tests.py"]
+
+[tool.ruff]
+# Match a common line length; target our Python version.
+line-length = 100
+target-version = "py312"
+# Don't lint auto-generated migrations.
+extend-exclude = ["*/migrations/*"]
+
+[tool.ruff.lint]
+# A sensible starter rule set: pyflakes (F), pycodestyle (E/W), isort (I).
+select = ["E", "W", "F", "I"]

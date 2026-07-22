@@ -1,11 +1,12 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
-from rest_framework import viewsets
-from apps.closet.serializers import ClothingItemSerializer, ClothingTypeSerializer, OutfitSerializer
-from apps.closet.models import ClothingType, ClothingItem, Outfit
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
+from rest_framework import viewsets
 from rest_framework.response import Response
-from apps.closet.pagination  import StandardResultsSetPagination
+
+from apps.closet.models import ClothingItem, ClothingType, Outfit
+from apps.closet.pagination import StandardResultsSetPagination
+from apps.closet.serializers import ClothingItemSerializer, ClothingTypeSerializer, OutfitSerializer
+
 # Create your views here.
 
 
@@ -45,7 +46,7 @@ class OutfitViewSet(viewsets.ModelViewSet):
     """
     serializer_class = OutfitSerializer
     queryset = Outfit.objects.all()
-    
+
     # Overwrites the create function to save information about the creator of the outfit
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -61,4 +62,4 @@ class OutfitViewSet(viewsets.ModelViewSet):
 
 
 
-    
+

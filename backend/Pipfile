@@ -1,0 +1,28 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "~=5.1"                                    # capped at 5.1: djoser supports Django 3.2–5.1
+djangorestframework = "~=3.17"
+django-cors-headers = "~=4.9"
+djoser = "~=2.3"                                    # token auth endpoints (requires DRF>=3.12, Django<=5.1)
+whitenoise = "~=6.12"                               # serves static files in production
+dj-database-url = "~=3.1"                           # parses DATABASE_URL into Django DB config
+psycopg = {version = "~=3.3", extras = ["binary"]}  # PostgreSQL driver v3 (binary = no compiler needed)
+pillow = "~=12.3"                                   # image handling — required by ImageField
+anthropic = ">=0.117,<0.118"                        # Claude SDK; pre-1.0 so minor pinned deliberately
+openai = "~=2.46"                                   # OpenAI SDK (also drives local OpenAI-compatible servers)
+pgvector = "~=0.5.0"                                # Django integration for the vector column
+numpy = "~=2.2"                                     # vector math for the eval harness
+gunicorn = "~=23.0"                                 # production WSGI server 
+
+
+[dev-packages]
+pytest = "~=9.1"                 # test runner
+pytest-django = "~=4.12"         # Django integration for pytest (DB setup, settings)
+ruff = "~=0.15.0"                # fast linter + formatter (pre-1.0: minor pinned)
+
+[requires]
+python_version = "3.12"

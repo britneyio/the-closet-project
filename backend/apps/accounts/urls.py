@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import include, path
 
 # adds enpoints to our applicatoin
 accounts_urlpatterns = [

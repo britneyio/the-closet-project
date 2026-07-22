@@ -1,0 +1,91 @@
+name: CI
+
+# When does this pipeline run?
+on:
+  push:
+    branches: [main]        # every push to main
+  pull_request:             # and every PR (against any branch)
+
+jobs:
+  # ─── TIER 1: unit + integration on the runner (fast feedback) ──────
+  backend-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend   # all `run:` steps happen in backend/
+
+    # A real Postgres+pgvector, available to steps at localhost:5432.
+    services:
+      db:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: closet
+          POSTGRES_USER: closet
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # Wait until Postgres is actually accepting connections before tests run.
+        options: >-
+          --health-cmd "pg_isready -U closet"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+
+    env:
+      # Point Django at the service container. Host is `localhost` because the
+      # service port is published to the runner (not `db` like in compose).
+      DATABASE_URL: postgres://closet:postgres@localhost:5432/closet
+      DJANGO_SECRET_KEY: ci-not-secret
+      DJANGO_DEBUG: "False"
+
+    steps:
+      - uses: actions/checkout@v4          # pull the repo onto the runner
+
+      - uses: actions/setup-python@v5      # install Python 3.12
+        with:
+          python-version: "3.12"
+
+      - name: Install pipenv
+        run: pip install pipenv
+
+      - name: Install dependencies (incl. dev)
+        run: pipenv install --dev --deploy  # --deploy: fail if lock is stale
+
+      - name: Lint (ruff)
+        run: pipenv run ruff check .
+
+      - name: Check for missing migrations
+        run: pipenv run python manage.py makemigrations --check --dry-run
+
+      - name: Run tests (pytest)
+        run: pipenv run pytest -v
+
+  # ─── DEFERRED (Option B, future): integration "beta" tier that tests the
+  # actual Docker image via `docker compose up --build` + migrate + smoke test.
+  # Kept out of per-push CI for now to stay lean; re-enable when hardening for
+  # deploy. See plan §9b.
+
+  # ─── Frontend: it still builds ─────────────────────────────────────
+  frontend-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        # CRA treats warnings as errors when CI=true. Set false for now so
+        # pre-existing warnings don't fail the build; flip to true to enforce.
+        env:
+          CI: "false"
+        run: npm run build

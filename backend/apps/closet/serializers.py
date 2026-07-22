@@ -1,9 +1,7 @@
-from rest_framework import serializers
-from apps.closet.models import ClothingItem, ClothingType, Outfit
-from django.core.files import File
-from django.core.files.temp import NamedTemporaryFile
-from urllib.request import urlopen
 
+from rest_framework import serializers
+
+from apps.closet.models import ClothingItem, ClothingType, Outfit
 
 
 class ClothingTypeSerializer(serializers.ModelSerializer):
@@ -24,7 +22,12 @@ class ClothingItemSerializer(serializers.ModelSerializer):
 
 class OutfitSerializer(serializers.ModelSerializer):
     items = ClothingItemSerializer(read_only=True, many=True)
-    items_id = serializers.PrimaryKeyRelatedField(queryset=ClothingItem.objects.all(), source='items', read_only=False, many=True)
+    items_id = serializers.PrimaryKeyRelatedField(
+        queryset=ClothingItem.objects.all(),
+        source='items',
+        read_only=False,
+        many=True,
+    )
 
     class Meta:
         model = Outfit
