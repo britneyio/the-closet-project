@@ -1,10 +1,14 @@
 import base64
 import json
+import logging
 import os
 
 from anthropic import Anthropic
 
-from apps.ai.providers.base import AIProvider
+from apps.ai.observability import log_latency
+from apps.ai.providers.base import AIProvider, ProviderError
+
+logger = logging.getLogger(__name__)
 
 
 class AnthropicProvider(AIProvider):
@@ -16,7 +20,7 @@ class AnthropicProvider(AIProvider):
     EMBEDDING_PROVIDER (openai / local) via the factory.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Zero-arg would also work (the SDK reads ANTHROPIC_API_KEY itself);
         # passing it explicitly matches the official docs example.
         self.client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
@@ -25,12 +29,17 @@ class AnthropicProvider(AIProvider):
         self.vision_model = os.environ.get("VISION_MODEL", "claude-haiku-4-5")
 
     def chat(self, messages: list[dict], system: str | None = None) -> str:
-        message = self.client.messages.create(
-            model=self.chat_model,
-            max_tokens=2048,
-            system=system,        # trusted operator prompt; None is fine
-            messages=messages,
-        )
+        try:
+            with log_latency("chat", self.chat_model):
+                message = self.client.messages.create(
+                    model=self.chat_model,
+                    max_tokens=2048,
+                    system=system,        # trusted operator prompt; None is fine
+                    messages=messages,
+                )
+        except Exception as exc:  # SDK/network/rate-limit failure -> typed upstream error
+            logger.exception("Anthropic chat call failed")
+            raise ProviderError("Anthropic chat call failed") from exc
         # Return the first text block's text ("" if none) — the interface
         # returns a string to the caller; it does not print.
         return next((b.text for b in message.content if b.type == "text"), "")
@@ -55,14 +64,19 @@ class AnthropicProvider(AIProvider):
         else:
             image_block = {"type": "image", "source": {"type": "url", "url": image}}
 
-        message = self.client.messages.create(
-            model=self.vision_model,
-            max_tokens=1024,
-            messages=[{
-                "role": "user",
-                "content": [image_block, {"type": "text", "text": prompt}],
-            }],
-        )
+        try:
+            with log_latency("vision", self.vision_model):
+                message = self.client.messages.create(
+                    model=self.vision_model,
+                    max_tokens=1024,
+                    messages=[{
+                        "role": "user",
+                        "content": [image_block, {"type": "text", "text": prompt}],
+                    }],
+                )
+        except Exception as exc:
+            logger.exception("Anthropic vision call failed")
+            raise ProviderError("Anthropic vision call failed") from exc
 
         text = next((b.text for b in message.content if b.type == "text"), "")
         # STUB until Step 3: we'll enforce a JSON schema (structured outputs)

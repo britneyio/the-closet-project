@@ -13,7 +13,7 @@ class Conversation(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title or f"Conversation {self.pk}"
 
 
@@ -35,5 +35,5 @@ class ChatMessage(models.Model):
     class Meta:
         ordering = ["created_at"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.role}: {self.content[:40]}"

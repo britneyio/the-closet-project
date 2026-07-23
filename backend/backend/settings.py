@@ -97,9 +97,57 @@ RESEND_FROM_EMAIL = os.environ.get(
     "RESEND_FROM_EMAIL", "The Closet Project <onboarding@resend.dev>"
 )
 
+# AI chat tuning knobs — env-configurable so they can be tuned per environment
+# without a code change (defaults are the v1 values).
+#   AI_HISTORY_LIMIT — prior conversation turns sent as context per chat request.
+#   AI_RETRIEVE_K    — closet items retrieved (top-K) to ground each reply.
+AI_HISTORY_LIMIT = int(os.environ.get("AI_HISTORY_LIMIT", "10"))
+AI_RETRIEVE_K = int(os.environ.get("AI_RETRIEVE_K", "5"))
+
+# Logging. Django's default config only wires up its own `django.*` loggers, so
+# our `request` middleware logger and `apps.*` module loggers need explicit
+# routing to the console or they'd be silent. Level is env-tunable (default INFO);
+# root stays at WARNING so third-party libraries don't flood the logs.
+LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {"format": "%(asctime)s %(levelname)s %(name)s: %(message)s"},
+    },
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "formatter": "simple"},
+    },
+    "root": {"handlers": ["console"], "level": "WARNING"},
+    "loggers": {
+        # `apps` is the parent of apps.ai.chat, apps.accounts.signals, etc.
+        "apps": {"handlers": ["console"], "level": LOG_LEVEL, "propagate": False},
+        "request": {"handlers": ["console"], "level": LOG_LEVEL, "propagate": False},
+    },
+}
+
+# Sentry — error tracking + performance. No-op unless SENTRY_DSN is set (dev/CI),
+# so nothing external is required to run the app. The Django + logging integrations
+# auto-enable: unhandled exceptions and ERROR-level logs become Sentry events, and
+# lower-level logs become breadcrumbs. send_default_pii=False keeps user email/IP
+# out of events (privacy); traces_sample_rate defaults to 0 (errors only) and can
+# be raised to sample performance transactions incl. DB query spans.
+SENTRY_DSN = os.environ.get("SENTRY_DSN", "")
+if SENTRY_DSN:
+    import sentry_sdk
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        environment=os.environ.get("SENTRY_ENVIRONMENT", "development"),
+        traces_sample_rate=float(os.environ.get("SENTRY_TRACES_SAMPLE_RATE", "0.0")),
+        send_default_pii=False,
+    )
+
 MIDDLEWARE = [
 
     'django.middleware.security.SecurityMiddleware',
+    # One log line per request; high in the stack so it times the whole request.
+    'backend.middleware.RequestLoggingMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',

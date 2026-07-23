@@ -31,5 +31,5 @@ class UserProfile(models.Model):
     sms_opt_in = models.BooleanField(default=False)
     phone_number = models.CharField(max_length=32, null=True, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Profile<{self.user.username}>"

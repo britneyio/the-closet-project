@@ -11,7 +11,7 @@ class ClothingType(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=200)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 class ClothingItem(models.Model):
@@ -45,10 +45,10 @@ class ClothingItem(models.Model):
     # When enrichment last succeeded; null = not yet enriched (drives idempotency).
     enriched_at = models.DateTimeField(null=True, blank=True)
 
-    def __unicode__(self):
+    def __unicode__(self) -> str:
         return self.name
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
     class Meta:
         ordering = ['name']
@@ -71,7 +71,7 @@ class Outfit(models.Model):
     # The rendered composite (for thumbnails / sharing).
     composite_image = models.ImageField(upload_to='outfits/', null=True, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     class Meta:
@@ -89,7 +89,7 @@ class WearLog(models.Model):
     class Meta:
         ordering = ['-worn_on']
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.item.name} worn {self.worn_on}"
 
 
@@ -104,7 +104,7 @@ class PlannedOutfit(models.Model):
     class Meta:
         ordering = ['date']
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.outfit.name} on {self.date}"
 
 
@@ -121,7 +121,7 @@ class PackingList(models.Model):
     class Meta:
         ordering = ['-created_at']
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
 
@@ -136,7 +136,7 @@ class Capsule(models.Model):
     class Meta:
         ordering = ['name']
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 

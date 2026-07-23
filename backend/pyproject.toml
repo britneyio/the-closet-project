@@ -13,5 +13,19 @@ target-version = "py312"
 extend-exclude = ["*/migrations/*"]
 
 [tool.ruff.lint]
-# A sensible starter rule set: pyflakes (F), pycodestyle (E/W), isort (I).
-select = ["E", "W", "F", "I"]
+# Rule sets (each code is a family of checks):
+#   E, W  = pycodestyle Errors / Warnings — PEP 8 style (spacing, line length, etc.)
+#   F     = Pyflakes — real bugs: undefined names, unused imports, etc.
+#   I     = isort — import ordering / grouping.
+#   ANN   = flake8-ANNotations — REQUIRE type hints on function/method signatures.
+select = ["E", "W", "F", "I", "ANN"]
+# flake8-ANNotations pragmatic ignores:
+#   ANN002 = missing type for *args    — pass-through, not worth annotating.
+#   ANN003 = missing type for **kwargs — pass-through, not worth annotating.
+# ANN401 (disallow typing.Any) is intentionally NOT ignored: Any defeats the
+# purpose of typing, so it must be a deliberate, justified choice.
+ignore = ["ANN002", "ANN003"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests are pytest functions; requiring return/param annotations there is noise.
+"**/tests.py" = ["ANN"]

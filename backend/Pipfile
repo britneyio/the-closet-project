@@ -18,6 +18,7 @@ pgvector = "~=0.5.0"                                # Django integration for the
 numpy = "~=2.2"                                     # vector math for the eval harness
 gunicorn = "~=23.0"                                 # production WSGI server
 resend = "~=2.0"                                   # transactional email delivery
+sentry-sdk = "~=2.20"                              # error tracking + performance (Django auto-integration)
 
 
 [dev-packages]

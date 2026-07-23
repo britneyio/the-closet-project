@@ -21,6 +21,7 @@ from django.utils import timezone
 from PIL import Image, UnidentifiedImageError
 
 from apps.ai.providers.factory import get_embedding_provider, get_provider
+from apps.closet.models import ClothingItem
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +73,7 @@ def resize_for_vision(image_bytes: bytes) -> bytes:
     return out.getvalue()
 
 
-def build_enrichment_text(item, attrs: dict) -> str:
+def build_enrichment_text(item: ClothingItem, attrs: dict) -> str:
     """The canonical string we embed — the item's retrieval surface. Built from
     the item name plus the vision attributes, so semantic search matches on
     meaning ('casual warm-weather top') rather than the raw filename."""
@@ -87,7 +88,7 @@ def build_enrichment_text(item, attrs: dict) -> str:
     return ". ".join(str(p) for p in parts if p)
 
 
-def enrich_item(item, *, force: bool = False) -> bool:
+def enrich_item(item: ClothingItem, *, force: bool = False) -> bool:
     """Enrich one ClothingItem in place: vision attributes + embedding + enriched_at.
 
     Returns True if the item was (re-)enriched and saved, False if it was skipped
@@ -97,7 +98,8 @@ def enrich_item(item, *, force: bool = False) -> bool:
     if item.enriched_at and not force:
         return False
     if not item.cover_file:
-        logger.info("Item %s has no cover_file; skipping enrichment", item.pk)
+        # cover_file is required at the model level, so its absence is anomalous.
+        logger.warning("Item %s has no cover_file; skipping enrichment", item.pk)
         return False
 
     try:

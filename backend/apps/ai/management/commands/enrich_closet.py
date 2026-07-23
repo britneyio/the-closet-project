@@ -9,7 +9,7 @@ Idempotent by default (skips items with enriched_at). Best-effort per item: one
 item's failure is logged by enrich_item() and the batch continues.
 """
 from django.contrib.auth.models import User
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandParser
 
 from apps.ai.enrichment import enrich_item
 from apps.closet.models import ClothingItem
@@ -18,7 +18,7 @@ from apps.closet.models import ClothingItem
 class Command(BaseCommand):
     help = "Enrich clothing items with vision attributes + embeddings."
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument(
             "--force", action="store_true",
             help="Re-enrich items that already have enriched_at.",
@@ -28,7 +28,7 @@ class Command(BaseCommand):
             help="Limit to a single user (by username).",
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         items = ClothingItem.objects.all()
         if options["user"]:
             user = User.objects.filter(username=options["user"]).first()

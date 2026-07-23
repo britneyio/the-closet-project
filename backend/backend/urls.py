@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import path
 
 from apps.accounts.urls import accounts_urlpatterns
+from apps.ai.urls import ai_urlpatterns
 from apps.closet.urls import clothing_urlpatterns
 from apps.notifications.urls import notifications_urlpatterns
 
@@ -29,4 +30,5 @@ urlpatterns = [
 urlpatterns += accounts_urlpatterns      # authentication + profile
 urlpatterns += clothing_urlpatterns      # closet
 urlpatterns += notifications_urlpatterns # in-app notifications
+urlpatterns += ai_urlpatterns            # chat + conversation history
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

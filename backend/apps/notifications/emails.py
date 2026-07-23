@@ -11,14 +11,16 @@ the app or the tests.
 import logging
 import os
 
+from django.contrib.auth.models import User
+
 logger = logging.getLogger(__name__)
 
 
-def _from_email():
+def _from_email() -> str:
     return os.environ.get("RESEND_FROM_EMAIL", "The Closet Project <onboarding@resend.dev>")
 
 
-def send_email(to, subject, html):
+def send_email(to: str, subject: str, html: str) -> dict | None:
     """Send one HTML email. Returns Resend's response dict, or None if delivery
     was skipped (no API key) or failed. Import of the resend SDK is deferred so
     the package is only needed when a key is actually configured."""
@@ -39,7 +41,7 @@ def send_email(to, subject, html):
         return None
 
 
-def send_welcome_email(user):
+def send_welcome_email(user: User) -> dict | None:
     """Account-creation transactional email."""
     if not user.email:
         return None
@@ -52,7 +54,7 @@ def send_welcome_email(user):
     )
 
 
-def send_account_deleted_email(email, username):
+def send_account_deleted_email(email: str, username: str) -> dict | None:
     """Account-deletion transactional email."""
     return send_email(
         email,

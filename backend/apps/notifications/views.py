@@ -1,5 +1,7 @@
+from django.db.models import QuerySet
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
+from rest_framework.request import Request
 from rest_framework.response import Response
 
 from apps.notifications.models import Notification
@@ -20,11 +22,11 @@ class NotificationViewSet(
     """
     serializer_class = NotificationSerializer
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Notification]:
         return Notification.objects.filter(user=self.request.user)
 
     @action(detail=False, methods=["post"])
-    def mark_all_read(self, request):
+    def mark_all_read(self, request: Request) -> Response:
         """Mark every unread notification for the current user as read."""
         updated = self.get_queryset().filter(read=False).update(read=True)
         return Response({"marked_read": updated})

@@ -5,7 +5,7 @@ class AccountsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'apps.accounts'
 
-    def ready(self):
+    def ready(self) -> None:
         # Wire user lifecycle side effects. dispatch_uid makes the connections
         # idempotent, so a double import (e.g. under autoreload) can't register
         # the same receiver twice.

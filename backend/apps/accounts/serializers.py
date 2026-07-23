@@ -16,7 +16,7 @@ class UserCreateSerializer(BaseUserCreateSerializer):
 
     email = serializers.EmailField(required=True, allow_blank=False)
 
-    def validate_email(self, value):
+    def validate_email(self, value: str) -> str:
         if User.objects.filter(email__iexact=value).exists():
             raise serializers.ValidationError("A user with this email already exists.")
         return value
@@ -34,7 +34,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         )
 
 class CustomTokenCreateSerializer(TokenCreateSerializer):
-    def validate(self, attrs):
+    def validate(self, attrs: dict) -> dict:
         password = attrs.get('password')
         params = {settings.LOGIN_FIELD: attrs.get(settings.LOGIN_FIELD)}
         self.user = authenticate(

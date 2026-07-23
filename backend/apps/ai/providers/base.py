@@ -1,6 +1,13 @@
 from abc import ABC, abstractmethod
 
 
+class ProviderError(Exception):
+    """Raised when an upstream AI provider call fails (network, rate limit, API
+    error). Lets callers distinguish 'the model is down' (retryable, maps to HTTP
+    502) from a bug in our own code (a real exception, maps to 500) WITHOUT
+    depending on any vendor SDK's exception types."""
+
+
 class AIProvider(ABC):
     """
     The single interface every AI backend implements (Anthropic, OpenAI, local).

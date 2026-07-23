@@ -1,5 +1,6 @@
 from rest_framework import generics
 
+from apps.accounts.models import UserProfile
 from apps.accounts.serializers import UserProfileSerializer
 
 
@@ -12,5 +13,5 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     """
     serializer_class = UserProfileSerializer
 
-    def get_object(self):
+    def get_object(self) -> UserProfile:
         return self.request.user.profile
