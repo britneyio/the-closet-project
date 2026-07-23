@@ -26,7 +26,10 @@ RUN pip install pipenv
 COPY Pipfile Pipfile.lock ./
 
 # 7. Install locked deps into the container's system Python. --deploy fails if Pipfile.lock is stale.
-RUN pipenv install --deploy --system
+#    INSTALL_DEV=true (set by docker-compose for local dev) also pulls dev-packages
+#    (pytest, ruff); the prod image builds with the default false and stays lean.
+ARG INSTALL_DEV=false
+RUN pipenv install --deploy --system $([ "$INSTALL_DEV" = "true" ] && echo "--dev")
 
 # 8. NOW copy the app code. Code edits invalidate only this layer, not deps above.
 COPY . .

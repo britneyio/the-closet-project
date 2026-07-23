@@ -20,11 +20,13 @@ from django.urls import path
 
 from apps.accounts.urls import accounts_urlpatterns
 from apps.closet.urls import clothing_urlpatterns
+from apps.notifications.urls import notifications_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
-urlpatterns += accounts_urlpatterns # add URLs for authentication
-urlpatterns += clothing_urlpatterns # add closet URLs
-urlpatterns +=  static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += accounts_urlpatterns      # authentication + profile
+urlpatterns += clothing_urlpatterns      # closet
+urlpatterns += notifications_urlpatterns # in-app notifications
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

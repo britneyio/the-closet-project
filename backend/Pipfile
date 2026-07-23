@@ -16,7 +16,8 @@ anthropic = ">=0.117,<0.118"                        # Claude SDK; pre-1.0 so min
 openai = "~=2.46"                                   # OpenAI SDK (also drives local OpenAI-compatible servers)
 pgvector = "~=0.5.0"                                # Django integration for the vector column
 numpy = "~=2.2"                                     # vector math for the eval harness
-gunicorn = "~=23.0"                                 # production WSGI server 
+gunicorn = "~=23.0"                                 # production WSGI server
+resend = "~=2.0"                                   # transactional email delivery
 
 
 [dev-packages]

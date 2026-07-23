@@ -16,9 +16,24 @@ services:
       timeout: 3s
       retries: 5
 
+  # ─── Ollama: serves the BGE-M3 embedding model (OpenAI-compatible API) ──
+  # Runs as its OWN service so the model isn't loaded inside each gunicorn
+  # worker. Reached from `backend` at http://ollama:11434/v1 (service-name DNS).
+  # First run: `docker compose exec ollama ollama pull bge-m3` to fetch the model.
+  ollama:
+    image: ollama/ollama
+    volumes:
+      - ollama:/root/.ollama           # persist pulled models across restarts
+    ports:
+      - "11434:11434"                  # optional: reach Ollama from the host too
+
   # ─── Django backend ───────────────────────────────────────────────
   backend:
-    build: ./backend                   # build using backend/Dockerfile
+    build:
+      context: ./backend              # build using backend/Dockerfile
+      args:
+        INSTALL_DEV: "true"           # include dev-packages (pytest, ruff) in the local image
+
     command: python manage.py runserver 0.0.0.0:8000  # DEV override of the image's gunicorn CMD
     env_file: .env
     volumes:
@@ -28,7 +43,10 @@ services:
     depends_on:
       db:
         condition: service_healthy     # don't start until db's healthcheck passes
+      ollama:
+        condition: service_started     # embedding endpoint reachable (model pulled separately)
 
-# ─── Named volume: managed by Docker, survives `down`/`up` ────────────
+# ─── Named volumes: managed by Docker, survive `down`/`up` ────────────
 volumes:
   pgdata:
+  ollama:

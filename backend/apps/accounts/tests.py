@@ -1,106 +1,87 @@
-# WIP: email-verification tests are commented out for now.
-# They fail because the flow isn't finished/configured:
-#   - POST URLs lack trailing slashes -> Django returns 301 (APPEND_SLASH)
-#   - self.resend_verification_url is used but never defined
-#   - djoser email activation isn't configured in settings
-# Uncomment and fix when building the email-verification feature.
+"""Tests for the accounts app: profile auto-creation, the email uniqueness
+constraint, and the /profile/ endpoint."""
+import pytest
+from django.contrib.auth.models import User
+from django.db import IntegrityError, transaction
+from rest_framework.test import APIClient
 
-# from django.test import TestCase
-# from django.core import mail
-# from rest_framework import status
-# from rest_framework.test import APITestCase
-#
-# class EmailVerificationTest(APITestCase):
-#     #endpoints
-#     register_url = '/api/v1/users'
-#     activate_url = '/api/v1/users/activation'
-#     login_url  = '/api/v1/token/login/'
-#     user_details_url = '/api/v1/users'
-#
-#     # user info
-#     user_data = {
-#         'email': 'test@example.com',
-#         'username' : 'test_user',
-#         'password' : 'verysecret'
-#     }
-#     login_data = {
-#         'email' : 'test@example.com',
-#         'password': 'verysecret'
-#     }
-#     def test_register_with_email_verification(self):
-#         # register new user
-#         # parse the verification email
-#         # activate the account by sending tokena nd uid from the verification email
-#         # login to get auth_token
-#         # get user details
-#         response = self.client.post(self.register_url,self.user_data, format='json')
-#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-#         self.assertEqual(len(mail.outbox),1)
-#
-#         email_lines = mail.outbox[0].body.splitlines()
-#         print(mail.outbox[0].subject)
-#         print(mail.outbox[0].body)
-#
-#         activation_link = [i for i in email_lines if '/activate/' in i][0]
-#         uid, token = activation_link.split('/')[-2:]
-#
-#         data = {'uid' : uid, 'token' : token}
-#         response = self.client.post(self.activate_url, data, format='json')
-#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-#
-#         response = self.client.post(self.login_url, self.login_data, format='json')
-#         self.assertTrue('auth_token' in response.json())
-#         token = response.json()['auth_token']
-#
-#         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
-#         response = self.client.get(self.user_details_url, format='json')
-#         self.assertEqual(response.status_code, status.HTTP_200_OK)
-#         self.assertEqual(len(response.json()), 1)
-#         self.assertEqual(response.json()[0]['email'], self.user_data['email'])
-#         self.assertEqual(response.json()[0]['username'], self.user_data['username'])
-#
-#     def test_register_resend_verification(self):
-#         response = self.client.post(self.register_url, self.user_data, format='json')
-#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-#         self.assertEqual(len(mail.outbox),1)
-#
-#         response = self.client.post(self.login_url, self.login_data, format='json')
-#         self.assertTrue('auth_token' in response.json())
-#         token = response.json()['auth_token']
-#
-#         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
-#         response = self.client.get(self.user_details_url, format='json')
-#         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-#
-#         self.client.credentials()
-#
-#         data = {'email': self.user_data['email']}
-#         response = self.client.post(self.resend_verification_url, data, format='json')
-#         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-#
-#         self.assertEqual(len(mail.outbox),2)
-#
-#         email_lines = mail.outbox[1].body.splitlines()
-#         activation_link = [i for  i in email_lines if '/activate/' in i][0]
-#         uid, token = activation_link.split('/')[-2:]
-#
-#         data = {'uid': uid, 'token': token}
-#         response = self.client.post(self.activate_url, data, format='json')
-#
-#         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-#
-#     def test_resend_verification_wrong_email(self):
-#         response = self.client.post(self.register_url, self.user_data, format='json')
-#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-#
-#         data = {'email': self.user_data['email'] + '_this_email_is_wrong'}
-#         response = self.client.post(self.resend_verification_url, data, format='json')
-#         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-#
-#     def test_activate_with_wrong_uid_token(self):
-#         response = self.client.post(self.register_url, self.user_data, format='json')
-#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-#
-#         data = {'uid': 'wrong-uid', 'token': 'wrong-token'}
-#         response = self.client.post(self.activate_url, data, format='json')
-#         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+from apps.accounts.models import UserProfile
+
+
+@pytest.mark.django_db
+def test_profile_auto_created_with_user():
+    """The post_save signal creates exactly one profile, with sensible defaults."""
+    user = User.objects.create_user(username="alice", email="alice@example.com", password="pw")
+    assert UserProfile.objects.filter(user=user).count() == 1
+    assert user.profile.email_recommendations is True
+    assert user.profile.sms_opt_in is False
+
+
+@pytest.mark.django_db
+def test_email_unique_constraint_is_case_insensitive():
+    """The DB index rejects a duplicate email differing only in case."""
+    User.objects.create_user(username="a", email="dup@example.com", password="pw")
+    with pytest.raises(IntegrityError):
+        with transaction.atomic():  # keep the outer test transaction usable
+            User.objects.create_user(username="b", email="DUP@example.com", password="pw")
+
+
+@pytest.mark.django_db
+def test_registration_rejects_blank_email():
+    """Email is required for account creation: the registration endpoint rejects
+    a blank email with a 400 rather than creating a user."""
+    resp = APIClient().post(
+        "/api/v1/users/",
+        {"username": "noemail", "email": "", "password": "sup3rSecret!"},
+        format="json",
+    )
+    assert resp.status_code == 400
+    assert "email" in resp.data
+    assert not User.objects.filter(username="noemail").exists()
+
+
+@pytest.mark.django_db
+def test_blank_email_rejected_at_db_level():
+    """The CHECK constraint forbids a blank email even outside the API — e.g. a
+    shell/admin create_user call — not just at the serializer."""
+    with pytest.raises(IntegrityError):
+        with transaction.atomic():  # keep the outer test transaction usable
+            User.objects.create_user(username="blank", email="", password="pw")
+
+
+@pytest.mark.django_db
+def test_registration_rejects_duplicate_email_case_insensitively():
+    """Registering an email that already exists (ignoring case) returns a 400."""
+    User.objects.create_user(username="a", email="dup@example.com", password="pw")
+    resp = APIClient().post(
+        "/api/v1/users/",
+        {"username": "b", "email": "DUP@example.com", "password": "sup3rSecret!"},
+        format="json",
+    )
+    assert resp.status_code == 400
+    assert "email" in resp.data
+
+
+@pytest.mark.django_db
+def test_profile_endpoint_reads_and_updates_own_profile():
+    user = User.objects.create_user(username="alice", email="alice@example.com", password="pw")
+    client = APIClient()
+    client.force_authenticate(user=user)
+
+    resp = client.get("/api/v1/profile/")
+    assert resp.status_code == 200
+    assert resp.data["email_updates"] is True
+
+    resp = client.patch(
+        "/api/v1/profile/", {"location": "Boston", "sms_opt_in": True}, format="json"
+    )
+    assert resp.status_code == 200
+    user.profile.refresh_from_db()
+    assert user.profile.location == "Boston"
+    assert user.profile.sms_opt_in is True
+
+
+@pytest.mark.django_db
+def test_profile_endpoint_requires_authentication():
+    resp = APIClient().get("/api/v1/profile/")
+    assert resp.status_code in (401, 403)

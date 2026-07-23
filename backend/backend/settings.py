@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.closet',
+    'apps.ai',
+    'apps.notifications',
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
@@ -81,11 +83,19 @@ DJOSER = {
     # "ACTIVATION_URL": "activate/{uid}/{token}",
     'SERIALIZERS': {
         'token_create': 'apps.accounts.serializers.CustomTokenCreateSerializer',
+        'user_create': 'apps.accounts.serializers.UserCreateSerializer',
     },
 }
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SITE_NAME = "The Closet Project"
+
+# Transactional email is delivered through Resend (see apps/notifications/emails.py).
+# When RESEND_API_KEY is unset (local dev, CI) delivery is a logged no-op, so no
+# external service is needed to run the app or the tests.
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+RESEND_FROM_EMAIL = os.environ.get(
+    "RESEND_FROM_EMAIL", "The Closet Project <onboarding@resend.dev>"
+)
 
 MIDDLEWARE = [
 

@@ -15,7 +15,18 @@ class ClothingItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ClothingItem
-        fields = ('id', 'name', 'worn', 'ctype', 'location', 'cover_file')
+        # AI fields are additive + read-only (set by enrichment, never by the client).
+        # `embedding` is intentionally NOT exposed: a 1024-float vector is heavy and
+        # useless to the frontend.
+        fields = (
+            'id', 'name', 'worn', 'ctype', 'location', 'cover_file', 'price',
+            'color', 'style', 'formality', 'season', 'pattern', 'material',
+            'ai_description', 'attributes', 'enriched_at',
+        )
+        read_only_fields = (
+            'color', 'style', 'formality', 'season', 'pattern', 'material',
+            'ai_description', 'attributes', 'enriched_at',
+        )
 
 
 
