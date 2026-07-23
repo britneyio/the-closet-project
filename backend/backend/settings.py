@@ -209,6 +209,12 @@ STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STORAGES = {
+    # Uploaded media (ImageField/FileField) — local filesystem under MEDIA_ROOT.
+    # Overriding STORAGES replaces Django's defaults wholesale, so "default" must
+    # be declared explicitly or file saves fail with "no config for 'default'".
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
     # Enable WhiteNoise's GZip and Brotli compression of static assets:
     # https://whitenoise.readthedocs.io/en/latest/django.html#add-compression-and-caching-support
     "staticfiles": {

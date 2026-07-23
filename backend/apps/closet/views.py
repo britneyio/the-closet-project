@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.response import Response
 
+from apps.ai.enrichment import enrich_item
 from apps.closet.models import ClothingItem, ClothingType, Outfit
 from apps.closet.pagination import StandardResultsSetPagination
 from apps.closet.serializers import ClothingItemSerializer, ClothingTypeSerializer, OutfitSerializer
@@ -33,7 +34,13 @@ class ClothingItemViewSet(viewsets.ModelViewSet):
 
     # Overwrites the create function to save information about the creator of the items
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        item = serializer.save(user=self.request.user)
+        # Auto-enrich the new item (vision attributes + embedding). enrich_item is
+        # best-effort and never raises, so a provider/key error can't block the
+        # create response — the item is saved either way and can be backfilled
+        # later via `manage.py enrich_closet`. (Synchronous for now; a background-
+        # job candidate once we add the queue.)
+        enrich_item(item)
 
     # Overwrites the queryset to only return items created by the owner
     def get_queryset(self):
