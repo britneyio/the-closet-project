@@ -29,7 +29,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = (
-            "body_photo", "location",
+            "body_photo", "location", "remove_background", "has_onboarded",
             "email_recommendations", "email_updates", "sms_opt_in", "phone_number",
         )
 

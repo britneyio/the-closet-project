@@ -17,7 +17,9 @@ class ClothingType(models.Model):
 class ClothingItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=200)
-    worn = models.DateField(default=timezone.now, null=False)
+    # localdate() returns a `date`; timezone.now() is a datetime, which a
+    # DateField refuses to serialize on a freshly-created instance.
+    worn = models.DateField(default=timezone.localdate, null=False)
     ctype = models.ForeignKey(ClothingType, on_delete=models.CASCADE)
     location = models.CharField(max_length=200, null=True, blank=True)
     cover_file = models.ImageField(upload_to='images/')
@@ -57,7 +59,9 @@ class Outfit(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     about = models.TextField(null=True, blank=True)
-    worn = models.DateField(default=timezone.now, null=False)
+    # localdate() returns a `date`; timezone.now() is a datetime, which a
+    # DateField refuses to serialize on a freshly-created instance.
+    worn = models.DateField(default=timezone.localdate, null=False)
     items = models.ManyToManyField(ClothingItem)
 
     # ── Mannequin outfit builder (2D compositing — NOT 3D try-on) ──

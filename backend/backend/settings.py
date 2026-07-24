@@ -67,13 +67,44 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+        # Accepts an httpOnly cookie (web, CSRF-enforced) OR an Authorization
+        # header (mobile). Subclasses TokenAuthentication, so header auth and the
+        # existing tests are unaffected.
+        'apps.accounts.authentication.CookieTokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
 
 }
+
+# --- Auth cookie + transport security -------------------------------------
+# SECURE is on in production (Heroku) or when DJANGO_SECURE=true. It flips every
+# cookie to HTTPS-only and enables HSTS + SSL redirect. Local dev stays plain
+# HTTP (SECURE=False) so the Vite proxy can talk to the dev server.
+SECURE = IS_HEROKU_APP or os.environ.get("DJANGO_SECURE", "false").lower() == "true"
+
+AUTH_COOKIE_NAME = os.environ.get("AUTH_COOKIE_NAME", "auth_token")
+AUTH_COOKIE_MAX_AGE = int(os.environ.get("AUTH_COOKIE_MAX_AGE", str(60 * 60 * 24 * 14)))
+AUTH_COOKIE_SAMESITE = os.environ.get("AUTH_COOKIE_SAMESITE", "Lax")
+AUTH_COOKIE_SECURE = SECURE
+
+# CSRF cookie must be readable by JS (double-submit); the auth cookie must not.
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SECURE = SECURE
+SESSION_COOKIE_SECURE = SECURE
+SESSION_COOKIE_HTTPONLY = True
+
+# The web client sends credentials (cookies) cross-origin in some deployments.
+CORS_ALLOW_CREDENTIALS = True
+
+if SECURE:
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_HSTS_SECONDS = int(os.environ.get("SECURE_HSTS_SECONDS", str(60 * 60 * 24 * 365)))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 
 DJOSER = {
@@ -103,6 +134,9 @@ RESEND_FROM_EMAIL = os.environ.get(
 #   AI_RETRIEVE_K    — closet items retrieved (top-K) to ground each reply.
 AI_HISTORY_LIMIT = int(os.environ.get("AI_HISTORY_LIMIT", "10"))
 AI_RETRIEVE_K = int(os.environ.get("AI_RETRIEVE_K", "5"))
+# Recommender retrieves a larger palette than chat so the model has enough items
+# to assemble complete outfits from.
+AI_RECOMMEND_K = int(os.environ.get("AI_RECOMMEND_K", "20"))
 
 # Logging. Django's default config only wires up its own `django.*` loggers, so
 # our `request` middleware logger and `apps.*` module loggers need explicit
@@ -168,9 +202,18 @@ CORS_ALLOWED_ORIGINS = [
     "https://the-closet-capsule-1cf6a6c80544.herokuapp.com"
 ]
 
+# Django checks the request Origin against this list for state-changing (POST/
+# PATCH/DELETE) requests. The dev frontend runs at localhost:3000 and proxies to
+# the backend, so the browser's Origin is http://localhost:3000 — it must be
+# trusted here or every write fails "Origin checking failed". Mirrors the local
+# entries in CORS_ALLOWED_ORIGINS.
 CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3001",
     "https://closet-capsule-frontend-9ae63ded6df2.herokuapp.com",
-    "https://the-closet-capsule-1cf6a6c80544.herokuapp.com"
+    "https://the-closet-capsule-1cf6a6c80544.herokuapp.com",
 ]
 
 ROOT_URLCONF = 'backend.urls'

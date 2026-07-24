@@ -9,9 +9,20 @@ class ClothingTypeSerializer(serializers.ModelSerializer):
         model = ClothingType
         fields = ('id', 'name')
 
+
 class ClothingItemSerializer(serializers.ModelSerializer):
     cover_file = serializers.ImageField()
-    ctype =serializers.SlugRelatedField(slug_field='name',queryset=ClothingType.objects.all())
+    # A type is referenced by its id (read and write). Scoped to the requesting
+    # user's own types in __init__ so you can only attach your own (tenant
+    # isolation) and a name shared across users can't collide.
+    ctype = serializers.PrimaryKeyRelatedField(queryset=ClothingType.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # The endpoint requires authentication, so request.user is the owner.
+        request = self.context.get('request')
+        if request is not None:
+            self.fields['ctype'].queryset = ClothingType.objects.filter(user=request.user)
 
     class Meta:
         model = ClothingItem

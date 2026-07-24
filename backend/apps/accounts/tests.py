@@ -31,7 +31,7 @@ def test_registration_rejects_blank_email():
     """Email is required for account creation: the registration endpoint rejects
     a blank email with a 400 rather than creating a user."""
     resp = APIClient().post(
-        "/api/v1/users/",
+        "/api/v1/auth/users/",
         {"username": "noemail", "email": "", "password": "sup3rSecret!"},
         format="json",
     )
@@ -54,7 +54,7 @@ def test_registration_rejects_duplicate_email_case_insensitively():
     """Registering an email that already exists (ignoring case) returns a 400."""
     User.objects.create_user(username="a", email="dup@example.com", password="pw")
     resp = APIClient().post(
-        "/api/v1/users/",
+        "/api/v1/auth/users/",
         {"username": "b", "email": "DUP@example.com", "password": "sup3rSecret!"},
         format="json",
     )

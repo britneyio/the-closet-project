@@ -26,6 +26,14 @@ class UserProfile(models.Model):
     body_photo = models.ImageField(upload_to="body/", null=True, blank=True)
     location = models.CharField(max_length=200, null=True, blank=True)
 
+    # When on, uploaded item photos have their background removed during
+    # enrichment (cleaner closet tiles). User-toggleable; defaults on.
+    remove_background = models.BooleanField(default=True)
+
+    # Set true once the user has completed (or skipped) the first-run product
+    # tour, so it only shows to genuinely new users. Defaults false.
+    has_onboarded = models.BooleanField(default=False)
+
     email_recommendations = models.BooleanField(default=True)
     email_updates = models.BooleanField(default=True)
     sms_opt_in = models.BooleanField(default=False)

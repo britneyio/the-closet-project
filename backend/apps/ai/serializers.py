@@ -12,6 +12,15 @@ class ChatRequestSerializer(serializers.Serializer):
     conversation_id = serializers.IntegerField(required=False)
 
 
+class RecommendRequestSerializer(serializers.Serializer):
+    """Inbound recommender payload. `persist` saves the proposals as Outfit rows;
+    `max_outfits` caps how many the model composes (1-3)."""
+
+    query = serializers.CharField(max_length=2000, trim_whitespace=True)
+    persist = serializers.BooleanField(required=False, default=False)
+    max_outfits = serializers.IntegerField(required=False, default=3, min_value=1, max_value=7)
+
+
 class ReferencedItemSerializer(serializers.ModelSerializer):
     """Minimal item shape for chat responses / item thumbnails, excludes
     the embedding and other heavy fields."""

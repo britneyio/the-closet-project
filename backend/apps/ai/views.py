@@ -9,9 +9,11 @@ from rest_framework.views import APIView
 from apps.ai.chat import run_chat
 from apps.ai.models import Conversation
 from apps.ai.providers.base import ProviderError
+from apps.ai.recommend import recommend_outfits
 from apps.ai.serializers import (
     ChatRequestSerializer,
     ConversationSerializer,
+    RecommendRequestSerializer,
     ReferencedItemSerializer,
 )
 
@@ -54,6 +56,47 @@ class ChatView(APIView):
                 result["referenced_items"], many=True, context={"request": request}
             ).data,
         })
+
+
+class RecommendView(APIView):
+    """POST an occasion/request; get 1-3 outfits composed from the user's own
+    closet. Every returned item is guaranteed owned by the user (ID-ownership
+    guard in the service). persist=true also saves them as Outfit rows.
+
+    Error mapping matches ChatView: ProviderError (incl. malformed model output)
+    -> 502; unexpected -> 500.
+    """
+
+    def post(self, request: Request) -> Response:
+        payload = RecommendRequestSerializer(data=request.data)
+        payload.is_valid(raise_exception=True)
+
+        try:
+            result = recommend_outfits(
+                user=request.user,
+                query=payload.validated_data["query"],
+                persist=payload.validated_data["persist"],
+                max_outfits=payload.validated_data["max_outfits"],
+            )
+        except ProviderError:
+            logger.exception("Recommendation failed: provider unavailable")
+            return Response(
+                {"detail": "The stylist is unavailable right now. Please try again."},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+
+        outfits = [
+            {
+                "name": o["name"],
+                "reasoning": o["reasoning"],
+                "items": ReferencedItemSerializer(
+                    o["items"], many=True, context={"request": request}
+                ).data,
+                **({"id": o["id"]} if "id" in o else {}),
+            }
+            for o in result["outfits"]
+        ]
+        return Response({"outfits": outfits})
 
 
 class ConversationViewSet(viewsets.ReadOnlyModelViewSet):

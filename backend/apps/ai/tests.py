@@ -1,5 +1,6 @@
 """Tests for the vision-enrichment service. A fake provider stands in for the
 real vision/embedding models, so these run offline and deterministically."""
+import json
 from io import BytesIO
 
 import pytest
@@ -10,18 +11,21 @@ from rest_framework.test import APIClient
 
 from apps.ai import chat as chat_module
 from apps.ai import enrichment
+from apps.ai import recommend as recommend_module
 from apps.ai import vectorstore as vs_module
 from apps.ai.chat import SYSTEM_PROMPT
 from apps.ai.enrichment import build_enrichment_text, enrich_item, resize_for_vision
 from apps.ai.models import ChatMessage, Conversation
 from apps.ai.providers.base import ProviderError
 from apps.ai.vectorstore import VectorStore
-from apps.closet.models import ClothingItem, ClothingType
+from apps.closet.models import ClothingItem, ClothingType, Outfit
 
 EMBED_DIM = 1024
 
 
-def _png_bytes(size=(50, 50), color=(120, 30, 200)):
+def _png_bytes(
+    size: tuple[int, int] = (50, 50), color: tuple[int, int, int] = (120, 30, 200)
+) -> bytes:
     buf = BytesIO()
     Image.new("RGB", size, color).save(buf, format="PNG")
     return buf.getvalue()
@@ -30,13 +34,13 @@ def _png_bytes(size=(50, 50), color=(120, 30, 200)):
 class FakeProvider:
     """Stands in for both the vision provider and the embedding provider."""
 
-    def __init__(self, attrs):
+    def __init__(self, attrs: dict) -> None:
         self._attrs = attrs
 
-    def describe_image(self, image, prompt):
+    def describe_image(self, image: bytes | str, prompt: str) -> dict:
         return self._attrs
 
-    def embed(self, texts):
+    def embed(self, texts: list[str]) -> list[list[float]]:
         return [[0.1] * EMBED_DIM for _ in texts]
 
 
@@ -129,7 +133,7 @@ def test_enrich_item_swallows_provider_errors(item, monkeypatch):
 # ── VectorStore: real pgvector cosine retrieval (Step 4) ──────────────────────
 # Hand-set embeddings so ranking is deterministic and no embedding model is called.
 
-def make_unit_vector(axis):
+def make_unit_vector(axis: int) -> list[float]:
     """A 1024-dim one-hot vector along `axis`. One-hot vectors on different axes
     are orthogonal, so cosine distance cleanly separates them."""
     v = [0.0] * EMBED_DIM
@@ -137,7 +141,7 @@ def make_unit_vector(axis):
     return v
 
 
-def make_item(owner, name, embedding):
+def make_item(owner: User, name: str, embedding: list[float] | None) -> ClothingItem:
     ctype = ClothingType.objects.create(user=owner, name="Tops")
     return ClothingItem.objects.create(
         user=owner, name=name, ctype=ctype, cover_file="x.jpg", embedding=embedding,
@@ -195,7 +199,7 @@ def test_search_embeds_query_then_retrieves(alice, monkeypatch):
     make_item(alice, "target", make_unit_vector(7))
 
     class FakeEmbedder:
-        def embed(self, texts):
+        def embed(self, texts: list[str]) -> list[list[float]]:
             return [make_unit_vector(7) for _ in texts]
 
     monkeypatch.setattr(vs_module, "get_embedding_provider", lambda: FakeEmbedder())
@@ -211,24 +215,26 @@ def test_search_embeds_query_then_retrieves(alice, monkeypatch):
 class RecordingProvider:
     """Captures the last chat() call so tests can assert on prompt assembly."""
 
-    def __init__(self, reply="Here's an outfit idea."):
+    def __init__(self, reply: str = "Here's an outfit idea.") -> None:
         self.reply = reply
-        self.last_messages = None
-        self.last_system = None
+        self.last_messages: list[dict] | None = None
+        self.last_system: str | None = None
 
-    def chat(self, messages, system=None):
+    def chat(self, messages: list[dict], system: str | None = None) -> str:
         self.last_messages = messages
         self.last_system = system
         return self.reply
 
 
-def _patch_chat(monkeypatch, provider, items):
+def _patch_chat(
+    monkeypatch: pytest.MonkeyPatch, provider: object, items: list[ClothingItem]
+) -> None:
     """Wire chat.run_chat to a fake provider and a fake retriever returning `items`."""
     class FakeVectorStore:
-        def __init__(self, user):
+        def __init__(self, user: User) -> None:
             pass
 
-        def search(self, query_text, k=5):
+        def search(self, query_text: str, k: int = 5) -> list[ClothingItem]:
             return items
 
     monkeypatch.setattr(chat_module, "get_provider", lambda: provider)
@@ -351,3 +357,149 @@ def test_conversation_history_is_user_scoped(alice):
     assert resp.status_code == 200
     titles = [c["title"] for c in resp.data]
     assert titles == ["mine"]
+
+
+# ── Recommender (Step 6) ──────────────────────────────────────────────────────
+
+class JsonProvider:
+    """Chat provider returning a fixed JSON string (the recommender's contract)."""
+
+    def __init__(self, reply: str) -> None:
+        self.reply = reply
+
+    def chat(self, messages: list[dict], system: str | None = None) -> str:
+        return self.reply
+
+
+def _patch_recommend(
+    monkeypatch: pytest.MonkeyPatch, provider: object, palette: list[ClothingItem]
+) -> None:
+    class FakeVectorStore:
+        def __init__(self, user: User) -> None:
+            pass
+
+        def search(self, query_text: str, k: int = 20) -> list[ClothingItem]:
+            return palette
+
+    monkeypatch.setattr(recommend_module, "get_provider", lambda: provider)
+    monkeypatch.setattr(recommend_module, "VectorStore", FakeVectorStore)
+
+
+@pytest.mark.django_db
+def test_recommend_composes_outfits_from_palette(alice, monkeypatch):
+    top = make_item(alice, "White Tee", make_unit_vector(0))
+    jeans = make_item(alice, "Blue Jeans", make_unit_vector(1))
+    reply = json.dumps([
+        {"name": "Casual Day", "item_ids": [top.id, jeans.id], "reasoning": "easy pairing"},
+    ])
+    _patch_recommend(monkeypatch, JsonProvider(reply), [top, jeans])
+
+    client = APIClient()
+    client.force_authenticate(user=alice)
+    resp = client.post("/api/v1/ai/recommend/", {"query": "something casual"}, format="json")
+
+    assert resp.status_code == 200
+    outfits = resp.data["outfits"]
+    assert len(outfits) == 1
+    assert outfits[0]["name"] == "Casual Day"
+    assert {i["id"] for i in outfits[0]["items"]} == {top.id, jeans.id}
+
+
+@pytest.mark.django_db
+def test_recommend_drops_unowned_or_hallucinated_ids(alice, monkeypatch):
+    owned = make_item(alice, "White Tee", make_unit_vector(0))
+    bob = User.objects.create_user(username="bob", email="b@example.com", password="pw")
+    bobs = make_item(bob, "Bob's Coat", make_unit_vector(2))
+    # Model references an owned id, another user's id, and a nonexistent id.
+    reply = json.dumps([
+        {"name": "Mix", "item_ids": [owned.id, bobs.id, 999999], "reasoning": "x"},
+    ])
+    _patch_recommend(monkeypatch, JsonProvider(reply), [owned])  # palette = only owned
+
+    client = APIClient()
+    client.force_authenticate(user=alice)
+    resp = client.post("/api/v1/ai/recommend/", {"query": "outfit"}, format="json")
+
+    assert resp.status_code == 200
+    items = resp.data["outfits"][0]["items"]
+    assert {i["id"] for i in items} == {owned.id}  # only the owned, palette item survives
+
+
+@pytest.mark.django_db
+def test_recommend_discards_outfit_with_no_valid_items(alice, monkeypatch):
+    owned = make_item(alice, "White Tee", make_unit_vector(0))
+    reply = json.dumps([{"name": "Ghosts", "item_ids": [999999], "reasoning": "x"}])
+    _patch_recommend(monkeypatch, JsonProvider(reply), [owned])
+
+    client = APIClient()
+    client.force_authenticate(user=alice)
+    resp = client.post("/api/v1/ai/recommend/", {"query": "outfit"}, format="json")
+
+    assert resp.status_code == 200
+    assert resp.data["outfits"] == []  # no valid items -> outfit dropped
+
+
+@pytest.mark.django_db
+def test_recommend_persist_creates_outfit_rows(alice, monkeypatch):
+    top = make_item(alice, "White Tee", make_unit_vector(0))
+    reply = json.dumps([{"name": "Saved Look", "item_ids": [top.id], "reasoning": "nice"}])
+    _patch_recommend(monkeypatch, JsonProvider(reply), [top])
+
+    client = APIClient()
+    client.force_authenticate(user=alice)
+    resp = client.post(
+        "/api/v1/ai/recommend/", {"query": "outfit", "persist": True}, format="json"
+    )
+
+    assert resp.status_code == 200
+    outfit_id = resp.data["outfits"][0]["id"]
+    saved = Outfit.objects.get(id=outfit_id)
+    assert saved.user == alice
+    assert list(saved.items.all()) == [top]
+
+
+@pytest.mark.django_db
+def test_recommend_default_does_not_persist(alice, monkeypatch):
+    top = make_item(alice, "White Tee", make_unit_vector(0))
+    reply = json.dumps([{"name": "Look", "item_ids": [top.id], "reasoning": "x"}])
+    _patch_recommend(monkeypatch, JsonProvider(reply), [top])
+
+    client = APIClient()
+    client.force_authenticate(user=alice)
+    client.post("/api/v1/ai/recommend/", {"query": "outfit"}, format="json")
+
+    assert Outfit.objects.count() == 0  # persist defaults off
+
+
+@pytest.mark.django_db
+def test_recommend_malformed_json_returns_502(alice, monkeypatch):
+    top = make_item(alice, "White Tee", make_unit_vector(0))
+    _patch_recommend(monkeypatch, JsonProvider("not json at all"), [top])
+
+    client = APIClient()
+    client.force_authenticate(user=alice)
+    resp = client.post("/api/v1/ai/recommend/", {"query": "outfit"}, format="json")
+
+    assert resp.status_code == 502
+
+
+@pytest.mark.django_db
+def test_recommend_provider_error_returns_502(alice, monkeypatch):
+    class Broken:
+        def chat(self, messages, system=None):
+            raise ProviderError("down")
+
+    top = make_item(alice, "White Tee", make_unit_vector(0))
+    _patch_recommend(monkeypatch, Broken(), [top])
+
+    client = APIClient()
+    client.force_authenticate(user=alice)
+    resp = client.post("/api/v1/ai/recommend/", {"query": "outfit"}, format="json")
+
+    assert resp.status_code == 502
+
+
+@pytest.mark.django_db
+def test_recommend_requires_authentication():
+    resp = APIClient().post("/api/v1/ai/recommend/", {"query": "x"}, format="json")
+    assert resp.status_code in (401, 403)
