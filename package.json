@@ -1,0 +1,11 @@
+{
+  "name": "the-closet-project",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Closet Project",
+  "workspaces": [
+    "shared",
+    "frontend",
+    "mobile"
+  ]
+}

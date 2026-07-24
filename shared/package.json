@@ -1,0 +1,12 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cross-platform core (design tokens, API client, Redux store) for web + mobile.",
+  "main": "index.ts",
+  "types": "index.ts",
+  "peerDependencies": {
+    "@reduxjs/toolkit": ">=2",
+    "react-redux": ">=9"
+  }
+}
